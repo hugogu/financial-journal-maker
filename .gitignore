@@ -1,0 +1,53 @@
+# Java
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.iml
+.idea/
+.gradle/
+build/
+out/
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Spring Boot
+*.pid
+spring-boot-starter-*.jar
+
+# Environment files
+.env*
+!.env.example
+*.properties.local
+
+# Database
+*.db
+*.sqlite
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# IDE
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+
+# Test coverage
+coverage/
+.coverage
+
+# Docker
+# (dockerignore is a separate file, not ignored)
+
+# Compiled files
+*.pyc
+__pycache__/

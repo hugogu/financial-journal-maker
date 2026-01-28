@@ -29,11 +29,11 @@ description: "Implementation tasks for Chart of Accounts Management"
 
 **Purpose**: Project initialization and basic Spring Boot structure
 
-- [ ] T001 Create backend/ directory structure per plan.md with Maven/Gradle build configuration
-- [ ] T002 Initialize Spring Boot 3.x project with dependencies: Spring Web, Spring Data JPA, PostgreSQL, Flyway, SpringDoc OpenAPI, Apache POI, OpenCSV in backend/pom.xml or backend/build.gradle
-- [ ] T003 [P] Configure application.yml in backend/src/main/resources/ with datasource, JPA, Flyway, and server settings
-- [ ] T004 [P] Create OpenAPI configuration class in backend/src/main/java/com/financial/coa/config/OpenApiConfig.java
-- [ ] T005 [P] Create base package structure: controller/, service/, repository/, domain/, dto/, exception/, config/ under backend/src/main/java/com/financial/coa/
+- [x] T001 Create backend/ directory structure per plan.md with Maven/Gradle build configuration
+- [x] T002 Initialize Spring Boot 3.x project with dependencies: Spring Web, Spring Data JPA, PostgreSQL, Flyway, SpringDoc OpenAPI, Apache POI, OpenCSV in backend/pom.xml or backend/build.gradle
+- [x] T003 [P] Configure application.yml in backend/src/main/resources/ with datasource, JPA, Flyway, and server settings
+- [x] T004 [P] Create OpenAPI configuration class in backend/src/main/java/com/financial/coa/config/OpenApiConfig.java
+- [x] T005 [P] Create base package structure: controller/, service/, repository/, domain/, dto/, exception/, config/ under backend/src/main/java/com/financial/coa/
 
 ---
 
@@ -43,13 +43,13 @@ description: "Implementation tasks for Chart of Accounts Management"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T006 Create Flyway migration V1__create_coa_tables.sql in backend/src/main/resources/db/migration/ with accounts, account_mappings, account_references, import_jobs tables
-- [ ] T007 [P] Create base exception classes in backend/src/main/java/com/financial/coa/exception/: CoaException.java (base), DuplicateAccountCodeException.java, AccountReferencedException.java, AccountNotFoundException.java, InvalidImportFileException.java, CircularReferenceException.java
-- [ ] T008 [P] Create global exception handler @RestControllerAdvice in backend/src/main/java/com/financial/coa/exception/GlobalExceptionHandler.java with error response mapping
-- [ ] T009 [P] Create ErrorResponse DTO in backend/src/main/java/com/financial/coa/dto/ErrorResponse.java with timestamp, status, error, message, path, errorCode fields
-- [ ] T010 [P] Configure logging in backend/src/main/resources/logback-spring.xml with appropriate log levels for debugging
-- [ ] T011 Create Docker Compose configuration in docker-compose.yml with PostgreSQL service (coa_db database)
-- [ ] T012 [P] Create Dockerfile for Spring Boot application in backend/Dockerfile with multi-stage build
+- [x] T006 Create Flyway migration V1__create_coa_tables.sql in backend/src/main/resources/db/migration/ with accounts, account_mappings, account_references, import_jobs tables
+- [x] T007 [P] Create base exception classes in backend/src/main/java/com/financial/coa/exception/: CoaException.java (base), DuplicateAccountCodeException.java, AccountReferencedException.java, AccountNotFoundException.java, InvalidImportFileException.java, CircularReferenceException.java
+- [x] T008 [P] Create global exception handler @RestControllerAdvice in backend/src/main/java/com/financial/coa/exception/GlobalExceptionHandler.java with error response mapping
+- [x] T009 [P] Create ErrorResponse DTO in backend/src/main/java/com/financial/coa/dto/ErrorResponse.java with timestamp, status, error, message, path, errorCode fields
+- [x] T010 [P] Configure logging in backend/src/main/resources/logback-spring.xml with appropriate log levels for debugging
+- [x] T011 Create Docker Compose configuration in docker-compose.yml with PostgreSQL service (coa_db database)
+- [x] T012 [P] Create Dockerfile for Spring Boot application in backend/Dockerfile with multi-stage build
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -63,34 +63,34 @@ description: "Implementation tasks for Chart of Accounts Management"
 
 ### Domain Models for US1 + US5
 
-- [ ] T013 [P] [US1] Create Account entity in backend/src/main/java/com/financial/coa/domain/Account.java with fields: id, code (unique), name, description, parentId (self-reference), sharedAcrossScenarios, version (@Version), createdAt, updatedAt, createdBy
-- [ ] T014 [P] [US5] Create AccountReference entity in backend/src/main/java/com/financial/coa/domain/AccountReference.java with fields: id, accountCode, referenceSourceId, referenceType (enum: RULE/SCENARIO), referenceDescription, createdAt
+- [x] T013 [P] [US1] Create Account entity in backend/src/main/java/com/financial/coa/domain/Account.java with fields: id, code (unique), name, description, parentId (self-reference), sharedAcrossScenarios, version (@Version), createdAt, updatedAt, createdBy
+- [x] T014 [P] [US5] Create AccountReference entity in backend/src/main/java/com/financial/coa/domain/AccountReference.java with fields: id, accountCode, referenceSourceId, referenceType (enum: RULE/SCENARIO), referenceDescription, createdAt
 
 ### Repositories for US1 + US5
 
-- [ ] T015 [P] [US1] Create AccountRepository interface in backend/src/main/java/com/financial/coa/repository/AccountRepository.java extending JpaRepository with custom query methods: findByCode, findByParentId, existsByCode
-- [ ] T016 [P] [US5] Create AccountReferenceRepository interface in backend/src/main/java/com/financial/coa/repository/AccountReferenceRepository.java with methods: existsByAccountCode, findByAccountCode, countByAccountCode
+- [x] T015 [P] [US1] Create AccountRepository interface in backend/src/main/java/com/financial/coa/repository/AccountRepository.java extending JpaRepository with custom query methods: findByCode, findByParentId, existsByCode
+- [x] T016 [P] [US5] Create AccountReferenceRepository interface in backend/src/main/java/com/financial/coa/repository/AccountReferenceRepository.java with methods: existsByAccountCode, findByAccountCode, countByAccountCode
 
 ### DTOs for US1 + US5
 
-- [ ] T017 [P] [US1] Create AccountCreateRequest DTO in backend/src/main/java/com/financial/coa/dto/AccountCreateRequest.java with Bean Validation annotations (@NotBlank, @Pattern, @Size)
-- [ ] T018 [P] [US1] Create AccountUpdateRequest DTO in backend/src/main/java/com/financial/coa/dto/AccountUpdateRequest.java with version field for optimistic locking
-- [ ] T019 [P] [US1] Create AccountResponse DTO in backend/src/main/java/com/financial/coa/dto/AccountResponse.java with all account fields plus hasChildren, isReferenced, referenceCount
-- [ ] T020 [P] [US1] Create AccountTreeNode DTO in backend/src/main/java/com/financial/coa/dto/AccountTreeNode.java for recursive tree structure with children list
-- [ ] T021 [P] [US5] Create AccountReferenceResponse DTO in backend/src/main/java/com/financial/coa/dto/AccountReferenceResponse.java
-- [ ] T022 [P] [US5] Create ReferenceCreateRequest DTO in backend/src/main/java/com/financial/coa/dto/ReferenceCreateRequest.java
+- [x] T017 [P] [US1] Create AccountCreateRequest DTO in backend/src/main/java/com/financial/coa/dto/AccountCreateRequest.java with Bean Validation annotations (@NotBlank, @Pattern, @Size)
+- [x] T018 [P] [US1] Create AccountUpdateRequest DTO in backend/src/main/java/com/financial/coa/dto/AccountUpdateRequest.java with version field for optimistic locking
+- [x] T019 [P] [US1] Create AccountResponse DTO in backend/src/main/java/com/financial/coa/dto/AccountResponse.java with all account fields plus hasChildren, isReferenced, referenceCount
+- [x] T020 [P] [US1] Create AccountTreeNode DTO in backend/src/main/java/com/financial/coa/dto/AccountTreeNode.java for recursive tree structure with children list
+- [x] T021 [P] [US5] Create AccountReferenceResponse DTO in backend/src/main/java/com/financial/coa/dto/AccountReferenceResponse.java
+- [x] T022 [P] [US5] Create ReferenceCreateRequest DTO in backend/src/main/java/com/financial/coa/dto/ReferenceCreateRequest.java
 
 ### Services for US1 + US5
 
-- [ ] T023 [US1] Create AccountValidationService in backend/src/main/java/com/financial/coa/service/AccountValidationService.java with methods: validateUniqueCode, validateParentExists, validateNoCircularReference, validateAccountCodeFormat
-- [ ] T024 [US1] [US5] Create AccountService in backend/src/main/java/com/financial/coa/service/AccountService.java with CRUD operations, tree retrieval using recursive CTE, reference checking before updates/deletes (depends on T015, T016, T023)
-- [ ] T025 [US5] Implement reference protection logic in AccountService: check references before code modification, check references before deletion, return reference details in error messages
+- [x] T023 [US1] Create AccountValidationService in backend/src/main/java/com/financial/coa/service/AccountValidationService.java with methods: validateUniqueCode, validateParentExists, validateNoCircularReference, validateAccountCodeFormat
+- [x] T024 [US1] [US5] Create AccountService in backend/src/main/java/com/financial/coa/service/AccountService.java with CRUD operations, tree retrieval using recursive CTE, reference checking before updates/deletes (depends on T015, T016, T023)
+- [x] T025 [US5] Implement reference protection logic in AccountService: check references before code modification, check references before deletion, return reference details in error messages
 
 ### Controllers for US1 + US5
 
-- [ ] T026 [US1] Create AccountController in backend/src/main/java/com/financial/coa/controller/AccountController.java with endpoints: POST /accounts, GET /accounts/{code}, GET /accounts (paginated), GET /accounts/tree, PUT /accounts/{code}, DELETE /accounts/{code}
-- [ ] T027 [US5] Add reference management endpoints to AccountController: GET /accounts/{code}/references, POST /references, DELETE /references/{referenceId}
-- [ ] T028 [US1] [US5] Add OpenAPI annotations (@Operation, @ApiResponse) to all AccountController methods with examples from contracts/coa-api.yaml
+- [x] T026 [US1] Create AccountController in backend/src/main/java/com/financial/coa/controller/AccountController.java with endpoints: POST /accounts, GET /accounts/{code}, GET /accounts (paginated), GET /accounts/tree, PUT /accounts/{code}, DELETE /accounts/{code}
+- [x] T027 [US5] Add reference management endpoints to AccountController: GET /accounts/{code}/references, POST /references, DELETE /references/{referenceId}
+- [x] T028 [US1] [US5] Add OpenAPI annotations (@Operation, @ApiResponse) to all AccountController methods with examples from contracts/coa-api.yaml
 
 **Checkpoint**: At this point, core account management with reference protection should be fully functional and testable independently
 

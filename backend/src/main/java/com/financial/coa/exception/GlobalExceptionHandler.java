@@ -1,0 +1,201 @@
+package com.financial.coa.exception;
+
+import com.financial.coa.dto.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * Global exception handler for all REST controllers.
+ * Maps exceptions to appropriate HTTP status codes and error responses.
+ */
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAccountNotFound(
+            AccountNotFoundException ex, HttpServletRequest request) {
+        log.warn("Account not found: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("ACCOUNT_NOT_FOUND")
+                .details(Map.of("accountCode", ex.getAccountCode()))
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(DuplicateAccountCodeException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateAccountCode(
+            DuplicateAccountCodeException ex, HttpServletRequest request) {
+        log.warn("Duplicate account code: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("DUPLICATE_ACCOUNT_CODE")
+                .details(Map.of("accountCode", ex.getAccountCode()))
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(AccountReferencedException.class)
+    public ResponseEntity<ErrorResponse> handleAccountReferenced(
+            AccountReferencedException ex, HttpServletRequest request) {
+        log.warn("Account referenced: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("ACCOUNT_REFERENCED")
+                .details(Map.of(
+                        "accountCode", ex.getAccountCode(),
+                        "referenceCount", ex.getReferenceCount()))
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(CircularReferenceException.class)
+    public ResponseEntity<ErrorResponse> handleCircularReference(
+            CircularReferenceException ex, HttpServletRequest request) {
+        log.warn("Circular reference detected: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("CIRCULAR_REFERENCE")
+                .details(Map.of(
+                        "accountCode", ex.getAccountCode(),
+                        "parentCode", ex.getParentCode()))
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(InvalidImportFileException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidImportFile(
+            InvalidImportFileException ex, HttpServletRequest request) {
+        log.warn("Invalid import file: {}", ex.getMessage());
+        
+        Map<String, Object> details = new HashMap<>();
+        if (!ex.getValidationErrors().isEmpty()) {
+            details.put("validationErrors", ex.getValidationErrors());
+        }
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("IMPORT_VALIDATION_FAILED")
+                .details(details.isEmpty() ? null : details)
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationErrors(
+            MethodArgumentNotValidException ex, HttpServletRequest request) {
+        log.warn("Validation failed: {}", ex.getMessage());
+        
+        Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Invalid value",
+                        (existing, replacement) -> existing
+                ));
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message("Validation failed")
+                .path(request.getRequestURI())
+                .errorCode("VALIDATION_ERROR")
+                .details(Map.of("fieldErrors", fieldErrors))
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLocking(
+            OptimisticLockingFailureException ex, HttpServletRequest request) {
+        log.warn("Optimistic locking failure: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message("Resource has been modified by another user. Please refetch and retry.")
+                .path(request.getRequestURI())
+                .errorCode("VERSION_MISMATCH")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(CoaException.class)
+    public ResponseEntity<ErrorResponse> handleCoaException(
+            CoaException ex, HttpServletRequest request) {
+        log.error("COA exception: {}", ex.getMessage(), ex);
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("INTERNAL_ERROR")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(
+            Exception ex, HttpServletRequest request) {
+        log.error("Unexpected error: {}", ex.getMessage(), ex);
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .message("An unexpected error occurred")
+                .path(request.getRequestURI())
+                .errorCode("INTERNAL_ERROR")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+}

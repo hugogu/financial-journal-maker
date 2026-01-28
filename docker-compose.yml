@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: coa-postgres
+    environment:
+      POSTGRES_DB: coa_db
+      POSTGRES_USER: coa_user
+      POSTGRES_PASSWORD: coa_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U coa_user -d coa_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  coa-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: coa-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: coa_db
+      DB_USER: coa_user
+      DB_PASSWORD: coa_password
+      SERVER_PORT: 8080
+      LOG_LEVEL: INFO
+      SQL_LOG_LEVEL: DEBUG
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

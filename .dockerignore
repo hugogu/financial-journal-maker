@@ -1,0 +1,48 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Build artifacts
+target/
+build/
+out/
+*.class
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env*
+*.properties.local
+
+# Test coverage
+coverage/
+
+# Documentation
+*.md
+!README.md
+
+# Specs and design docs
+specs/
+.specify/
+.windsurf/
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+pom.xml.tag
+pom.xml.releaseBackup
+
+# Gradle
+.gradle/
+gradle/
+gradlew
+gradlew.bat

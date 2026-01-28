@@ -1,0 +1,811 @@
+openapi: 3.0.3
+info:
+  title: Chart of Accounts Management API
+  description: |
+    RESTful API for managing chart of accounts structures, Formance Ledger mappings, 
+    and batch imports for the Financial Journal Maker platform.
+    
+    This API provides the foundational data layer for the AI-assisted accounting rule design system.
+  version: 1.0.0
+  contact:
+    name: Financial Journal Maker Team
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+  - url: https://api.financial-journal-maker.com/api/v1
+    description: Production server
+
+tags:
+  - name: Accounts
+    description: Chart of accounts CRUD operations
+  - name: Mappings
+    description: Account to Formance Ledger mappings
+  - name: Import
+    description: Batch import from Excel/CSV files
+  - name: References
+    description: Account reference tracking
+
+paths:
+  /accounts:
+    post:
+      tags: [Accounts]
+      summary: Create a new account
+      operationId: createAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountCreateRequest'
+            examples:
+              rootAccount:
+                summary: Create root account
+                value:
+                  code: "1000"
+                  name: "Assets"
+                  description: "All company assets"
+                  parentCode: null
+                  sharedAcrossScenarios: true
+              childAccount:
+                summary: Create child account
+                value:
+                  code: "1100"
+                  name: "Current Assets"
+                  description: "Assets convertible to cash within one year"
+                  parentCode: "1000"
+                  sharedAcrossScenarios: true
+      responses:
+        '201':
+          description: Account created successfully
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL of the created account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    
+    get:
+      tags: [Accounts]
+      summary: List all accounts with pagination
+      operationId: listAccounts
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+          description: Page number (0-indexed)
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+          description: Page size
+        - name: parentCode
+          in: query
+          schema:
+            type: string
+          description: Filter by parent account code
+        - name: shared
+          in: query
+          schema:
+            type: boolean
+          description: Filter by shared across scenarios flag
+      responses:
+        '200':
+          description: Paginated list of accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /accounts/tree:
+    get:
+      tags: [Accounts]
+      summary: Get full account tree structure
+      operationId: getAccountTree
+      parameters:
+        - name: rootCode
+          in: query
+          schema:
+            type: string
+          description: Optional root account code (returns subtree)
+      responses:
+        '200':
+          description: Hierarchical tree structure
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountTreeNode'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /accounts/{code}:
+    get:
+      tags: [Accounts]
+      summary: Get account by code
+      operationId: getAccount
+      parameters:
+        - $ref: '#/components/parameters/AccountCode'
+      responses:
+        '200':
+          description: Account details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    put:
+      tags: [Accounts]
+      summary: Update account (name/description only)
+      operationId: updateAccount
+      parameters:
+        - $ref: '#/components/parameters/AccountCode'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateRequest'
+      responses:
+        '200':
+          description: Account updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    
+    delete:
+      tags: [Accounts]
+      summary: Delete account
+      operationId: deleteAccount
+      parameters:
+        - $ref: '#/components/parameters/AccountCode'
+      responses:
+        '204':
+          description: Account deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Cannot delete - account has children or references
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-01-28T10:00:00Z"
+                status: 409
+                error: "Conflict"
+                message: "Cannot delete account: has 3 child accounts"
+                path: "/api/v1/accounts/1000"
+                errorCode: "ACCOUNT_HAS_CHILDREN"
+
+  /accounts/{code}/references:
+    get:
+      tags: [References]
+      summary: List all references for an account
+      operationId: getAccountReferences
+      parameters:
+        - $ref: '#/components/parameters/AccountCode'
+      responses:
+        '200':
+          description: List of references
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountReferenceResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /accounts/mappings:
+    post:
+      tags: [Mappings]
+      summary: Create account to Formance Ledger mapping
+      operationId: createMapping
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MappingCreateRequest'
+            example:
+              accountCode: "1000"
+              formanceLedgerAccount: "assets:current:cash"
+      responses:
+        '201':
+          description: Mapping created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MappingResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Mapping already exists for this account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /accounts/mappings/{code}:
+    get:
+      tags: [Mappings]
+      summary: Get mapping for account
+      operationId: getMapping
+      parameters:
+        - $ref: '#/components/parameters/AccountCode'
+      responses:
+        '200':
+          description: Mapping details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MappingResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    put:
+      tags: [Mappings]
+      summary: Update mapping for account
+      operationId: updateMapping
+      parameters:
+        - $ref: '#/components/parameters/AccountCode'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MappingUpdateRequest'
+      responses:
+        '200':
+          description: Mapping updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MappingResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    
+    delete:
+      tags: [Mappings]
+      summary: Delete mapping for account
+      operationId: deleteMapping
+      parameters:
+        - $ref: '#/components/parameters/AccountCode'
+      responses:
+        '204':
+          description: Mapping deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /accounts/import:
+    post:
+      tags: [Import]
+      summary: Import accounts from Excel/CSV file
+      operationId: importAccounts
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Excel (.xlsx, .xls) or CSV file
+                validateOnly:
+                  type: boolean
+                  default: false
+                  description: If true, only validate without persisting
+      responses:
+        '201':
+          description: Import job created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportJobResponse'
+        '400':
+          description: Invalid file format or validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportErrorResponse'
+              example:
+                timestamp: "2026-01-28T10:00:00Z"
+                status: 400
+                error: "Bad Request"
+                message: "File validation failed"
+                path: "/api/v1/accounts/import"
+                errorCode: "IMPORT_VALIDATION_FAILED"
+                validationErrors:
+                  - line: 5
+                    accountCode: "1100"
+                    error: "Duplicate account code"
+                  - line: 12
+                    accountCode: "2200"
+                    error: "Parent code '2000' does not exist"
+
+  /accounts/import/{jobId}:
+    get:
+      tags: [Import]
+      summary: Get import job status
+      operationId: getImportJob
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Import job ID
+      responses:
+        '200':
+          description: Import job details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportJobResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /references:
+    post:
+      tags: [References]
+      summary: Create account reference (internal use)
+      description: Called by rule/scenario modules to mark accounts as referenced
+      operationId: createReference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReferenceCreateRequest'
+      responses:
+        '201':
+          description: Reference created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountReferenceResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /references/{referenceId}:
+    delete:
+      tags: [References]
+      summary: Delete account reference (internal use)
+      description: Called by rule/scenario modules when reference no longer needed
+      operationId: deleteReference
+      parameters:
+        - name: referenceId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Reference deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  parameters:
+    AccountCode:
+      name: code
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9.-]+$'
+        maxLength: 50
+      description: Unique account code
+
+  schemas:
+    AccountCreateRequest:
+      type: object
+      required: [code, name]
+      properties:
+        code:
+          type: string
+          maxLength: 50
+          pattern: '^[A-Za-z0-9.-]+$'
+          description: Unique account code
+          example: "1000"
+        name:
+          type: string
+          maxLength: 255
+          description: Account name
+          example: "Assets"
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+          description: Optional detailed description
+          example: "All company assets"
+        parentCode:
+          type: string
+          nullable: true
+          description: Parent account code (null for root accounts)
+          example: null
+        sharedAcrossScenarios:
+          type: boolean
+          default: false
+          description: Whether account can be reused across scenarios
+
+    AccountUpdateRequest:
+      type: object
+      required: [name, version]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          description: Account name
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+          description: Account description
+        parentCode:
+          type: string
+          nullable: true
+          description: Parent account code
+        version:
+          type: integer
+          format: int64
+          description: Current version for optimistic locking
+
+    AccountResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        code:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        parentCode:
+          type: string
+          nullable: true
+        hasChildren:
+          type: boolean
+          description: Whether account has child accounts
+        isReferenced:
+          type: boolean
+          description: Whether account is referenced by rules/scenarios
+        referenceCount:
+          type: integer
+          description: Number of references
+        sharedAcrossScenarios:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      example:
+        id: 123
+        code: "1000"
+        name: "Assets"
+        description: "All company assets"
+        parentCode: null
+        hasChildren: true
+        isReferenced: false
+        referenceCount: 0
+        sharedAcrossScenarios: true
+        version: 1
+        createdAt: "2026-01-28T10:00:00Z"
+        updatedAt: "2026-01-28T10:00:00Z"
+
+    AccountTreeNode:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        isReferenced:
+          type: boolean
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountTreeNode'
+      example:
+        code: "1000"
+        name: "Assets"
+        description: "All company assets"
+        isReferenced: false
+        children:
+          - code: "1100"
+            name: "Current Assets"
+            description: null
+            isReferenced: true
+            children: []
+
+    AccountPageResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountResponse'
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        last:
+          type: boolean
+
+    MappingCreateRequest:
+      type: object
+      required: [accountCode, formanceLedgerAccount]
+      properties:
+        accountCode:
+          type: string
+          example: "1000"
+        formanceLedgerAccount:
+          type: string
+          maxLength: 255
+          description: Formance Ledger account path
+          example: "assets:current:cash"
+
+    MappingUpdateRequest:
+      type: object
+      required: [formanceLedgerAccount, version]
+      properties:
+        formanceLedgerAccount:
+          type: string
+          maxLength: 255
+        version:
+          type: integer
+          format: int64
+
+    MappingResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        accountCode:
+          type: string
+        formanceLedgerAccount:
+          type: string
+        version:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ImportJobResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        fileName:
+          type: string
+        fileFormat:
+          type: string
+          enum: [EXCEL, CSV]
+        status:
+          type: string
+          enum: [PENDING, PROCESSING, COMPLETED, FAILED]
+        totalRecords:
+          type: integer
+        processedRecords:
+          type: integer
+        failedRecords:
+          type: integer
+        errorDetails:
+          type: string
+          nullable: true
+          description: JSON array of error messages
+        startedAt:
+          type: string
+          format: date-time
+          nullable: true
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    ImportErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+        - type: object
+          properties:
+            validationErrors:
+              type: array
+              items:
+                type: object
+                properties:
+                  line:
+                    type: integer
+                  accountCode:
+                    type: string
+                  error:
+                    type: string
+
+    ReferenceCreateRequest:
+      type: object
+      required: [accountCode, referenceSourceId, referenceType]
+      properties:
+        accountCode:
+          type: string
+        referenceSourceId:
+          type: string
+          description: ID of rule or scenario
+        referenceType:
+          type: string
+          enum: [RULE, SCENARIO]
+        referenceDescription:
+          type: string
+          maxLength: 500
+          nullable: true
+
+    AccountReferenceResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        accountCode:
+          type: string
+        referenceSourceId:
+          type: string
+        referenceType:
+          type: string
+          enum: [RULE, SCENARIO]
+        referenceDescription:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+        errorCode:
+          type: string
+          description: Machine-readable error code
+        details:
+          type: object
+          additionalProperties: true
+          nullable: true
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters or validation failure
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            timestamp: "2026-01-28T10:00:00Z"
+            status: 400
+            error: "Bad Request"
+            message: "Account code contains invalid characters"
+            path: "/api/v1/accounts"
+            errorCode: "INVALID_ACCOUNT_CODE"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            timestamp: "2026-01-28T10:00:00Z"
+            status: 404
+            error: "Not Found"
+            message: "Account not found: 9999"
+            path: "/api/v1/accounts/9999"
+            errorCode: "ACCOUNT_NOT_FOUND"
+
+    Conflict:
+      description: Business rule violation or conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            duplicateCode:
+              summary: Duplicate account code
+              value:
+                timestamp: "2026-01-28T10:00:00Z"
+                status: 409
+                error: "Conflict"
+                message: "Account with code '1000' already exists"
+                path: "/api/v1/accounts"
+                errorCode: "DUPLICATE_ACCOUNT_CODE"
+            accountReferenced:
+              summary: Account is referenced
+              value:
+                timestamp: "2026-01-28T10:00:00Z"
+                status: 409
+                error: "Conflict"
+                message: "Cannot modify account code - referenced by 3 rules"
+                path: "/api/v1/accounts/1000"
+                errorCode: "ACCOUNT_REFERENCED"
+                details:
+                  accountCode: "1000"
+                  referenceCount: 3

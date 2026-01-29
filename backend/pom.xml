@@ -24,6 +24,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springdoc.version>2.3.0</springdoc.version>
+        <flyway.version>11.20.3</flyway.version>
         <poi.version>5.2.5</poi.version>
         <opencsv.version>5.9</opencsv.version>
         <testcontainers.version>1.19.3</testcontainers.version>
@@ -62,11 +63,13 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
         
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
         
         <!-- OpenAPI Documentation -->

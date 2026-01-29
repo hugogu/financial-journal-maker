@@ -58,13 +58,13 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
         WITH RECURSIVE account_tree AS (
             SELECT id, code, name, description, parent_id, 
                    shared_across_scenarios, version, created_at, updated_at, created_by,
-                   0 AS level, code AS path
+                   0 AS level, CAST(code AS VARCHAR(1000)) AS path
             FROM accounts
             WHERE parent_id IS NULL
             UNION ALL
             SELECT a.id, a.code, a.name, a.description, a.parent_id,
                    a.shared_across_scenarios, a.version, a.created_at, a.updated_at, a.created_by,
-                   at.level + 1, at.path || '/' || a.code
+                   at.level + 1, CAST(at.path || '/' || a.code AS VARCHAR(1000))
             FROM accounts a
             INNER JOIN account_tree at ON a.parent_id = at.id
         )
@@ -82,20 +82,20 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
         WITH RECURSIVE account_tree AS (
             SELECT id, code, name, description, parent_id,
                    shared_across_scenarios, version, created_at, updated_at, created_by,
-                   0 AS level
+                   0 AS level, CAST(code AS VARCHAR(1000)) AS path
             FROM accounts
             WHERE code = :rootCode
             UNION ALL
             SELECT a.id, a.code, a.name, a.description, a.parent_id,
                    a.shared_across_scenarios, a.version, a.created_at, a.updated_at, a.created_by,
-                   at.level + 1
+                   at.level + 1, CAST(at.path || '/' || a.code AS VARCHAR(1000))
             FROM accounts a
             INNER JOIN account_tree at ON a.parent_id = at.id
         )
         SELECT id, code, name, description, parent_id,
                shared_across_scenarios, version, created_at, updated_at, created_by
         FROM account_tree
-        ORDER BY level, code
+        ORDER BY path
         """, nativeQuery = true)
     List<Account> findSubtree(@Param("rootCode") String rootCode);
     

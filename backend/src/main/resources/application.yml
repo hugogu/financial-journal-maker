@@ -2,6 +2,13 @@ spring:
   application:
     name: coa-management
   
+  web:
+    resources:
+      add-mappings: true
+  mvc:
+    log-resolved-exception: false
+    throw-exception-if-no-handler-found: false
+  
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:coa_db}
     username: ${DB_USER:coa_user}

@@ -107,6 +107,7 @@ public class AccountService {
     
     /**
      * Update account (name/description/parent only, code is immutable if referenced).
+     * Shared accounts have additional restrictions on modifications.
      */
     @Transactional
     public AccountResponse updateAccount(String code, AccountUpdateRequest request) {
@@ -120,6 +121,9 @@ public class AccountService {
         if (refCount > 0) {
             log.debug("Account {} is referenced {} times", code, refCount);
         }
+        
+        // Check cross-scenario constraints for shared accounts
+        validateSharedAccountModification(account, refCount);
         
         // Update allowed fields
         account.setName(request.getName());
@@ -300,5 +304,57 @@ public class AccountService {
         }
         
         return roots;
+    }
+    
+    // Cross-scenario validation methods (T050-T052)
+    
+    /**
+     * Validate that modifications to shared accounts follow cross-scenario rules.
+     * Shared accounts that are referenced in multiple scenarios cannot have structural changes.
+     */
+    private void validateSharedAccountModification(Account account, long referenceCount) {
+        if (account.getSharedAcrossScenarios() && referenceCount > 1) {
+            log.warn("Attempting to modify shared account {} with {} references", 
+                    account.getCode(), referenceCount);
+            throw new IllegalArgumentException(
+                String.format("Cannot modify shared account '%s': used in %d scenario(s). " +
+                    "Shared accounts are immutable once referenced in multiple scenarios.",
+                    account.getCode(), referenceCount));
+        }
+    }
+    
+    /**
+     * Mark an account as shared across scenarios.
+     */
+    @Transactional
+    public AccountResponse markAccountAsShared(String code, boolean shared) {
+        log.info("Marking account {} as shared: {}", code, shared);
+        
+        Account account = accountRepository.findByCode(code)
+                .orElseThrow(() -> new AccountNotFoundException(code));
+        
+        account.setSharedAcrossScenarios(shared);
+        Account updated = accountRepository.save(account);
+        
+        return toAccountResponse(updated);
+    }
+    
+    /**
+     * Get list of scenarios using an account.
+     * Returns reference source IDs grouped by type.
+     */
+    @Transactional(readOnly = true)
+    public List<String> listAccountScenarios(String code) {
+        log.debug("Listing scenarios for account: {}", code);
+        
+        if (!accountRepository.existsByCode(code)) {
+            throw new AccountNotFoundException(code);
+        }
+        
+        return accountReferenceRepository.findByAccountCode(code).stream()
+                .filter(ref -> ref.getReferenceType() == AccountReference.ReferenceType.SCENARIO)
+                .map(ref -> ref.getReferenceSourceId())
+                .distinct()
+                .toList();
     }
 }

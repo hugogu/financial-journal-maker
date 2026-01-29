@@ -104,26 +104,26 @@ description: "Implementation tasks for Chart of Accounts Management"
 
 ### Domain Models for US2
 
-- [ ] T029 [P] [US2] Create AccountMapping entity in backend/src/main/java/com/financial/coa/domain/AccountMapping.java with fields: id, accountCode (unique FK to Account), formanceLedgerAccount, version, createdAt, updatedAt
+- [x] T029 [P] [US2] Create AccountMapping entity in backend/src/main/java/com/financial/coa/domain/AccountMapping.java with fields: id, accountCode (unique FK to Account), formanceLedgerAccount, version, createdAt, updatedAt
 
 ### Repositories for US2
 
-- [ ] T030 [P] [US2] Create AccountMappingRepository interface in backend/src/main/java/com/financial/coa/repository/AccountMappingRepository.java with methods: findByAccountCode, existsByAccountCode, deleteByAccountCode
+- [x] T030 [P] [US2] Create AccountMappingRepository interface in backend/src/main/java/com/financial/coa/repository/AccountMappingRepository.java with methods: findByAccountCode, existsByAccountCode, deleteByAccountCode
 
 ### DTOs for US2
 
-- [ ] T031 [P] [US2] Create MappingCreateRequest DTO in backend/src/main/java/com/financial/coa/dto/MappingCreateRequest.java with accountCode and formanceLedgerAccount fields
-- [ ] T032 [P] [US2] Create MappingUpdateRequest DTO in backend/src/main/java/com/financial/coa/dto/MappingUpdateRequest.java with version field
-- [ ] T033 [P] [US2] Create MappingResponse DTO in backend/src/main/java/com/financial/coa/dto/MappingResponse.java
+- [x] T031 [P] [US2] Create MappingCreateRequest DTO in backend/src/main/java/com/financial/coa/dto/MappingCreateRequest.java with accountCode and formanceLedgerAccount fields
+- [x] T032 [P] [US2] Create MappingUpdateRequest DTO in backend/src/main/java/com/financial/coa/dto/MappingUpdateRequest.java with version field
+- [x] T033 [P] [US2] Create MappingResponse DTO in backend/src/main/java/com/financial/coa/dto/MappingResponse.java
 
 ### Services for US2
 
-- [ ] T034 [US2] Create AccountMappingService in backend/src/main/java/com/financial/coa/service/AccountMappingService.java with methods: createMapping, getMapping, updateMapping, deleteMapping, validateAccountExists (depends on T030)
+- [x] T034 [US2] Create AccountMappingService in backend/src/main/java/com/financial/coa/service/AccountMappingService.java with methods: createMapping, getMapping, updateMapping, deleteMapping, validateAccountExists (depends on T030)
 
 ### Controllers for US2
 
-- [ ] T035 [US2] Create AccountMappingController in backend/src/main/java/com/financial/coa/controller/AccountMappingController.java with endpoints: POST /accounts/mappings, GET /accounts/mappings/{code}, PUT /accounts/mappings/{code}, DELETE /accounts/mappings/{code}
-- [ ] T036 [US2] Add OpenAPI annotations to AccountMappingController methods with examples from contracts/coa-api.yaml
+- [x] T035 [US2] Create AccountMappingController in backend/src/main/java/com/financial/coa/controller/AccountMappingController.java with endpoints: POST /accounts/mappings, GET /accounts/mappings/{code}, PUT /accounts/mappings/{code}, DELETE /accounts/mappings/{code}
+- [x] T036 [US2] Add OpenAPI annotations to AccountMappingController methods with examples from contracts/coa-api.yaml
 
 **Checkpoint**: At this point, User Stories 1, 2, and 5 should all work independently
 
@@ -137,31 +137,31 @@ description: "Implementation tasks for Chart of Accounts Management"
 
 ### Domain Models for US3
 
-- [ ] T037 [P] [US3] Create ImportJob entity in backend/src/main/java/com/financial/coa/domain/ImportJob.java with fields: id, fileName, fileFormat (enum: EXCEL/CSV), status (enum: PENDING/PROCESSING/COMPLETED/FAILED), totalRecords, processedRecords, failedRecords, errorDetails (JSON), startedAt, completedAt, createdAt, createdBy
+- [x] T037 [P] [US3] Create ImportJob entity in backend/src/main/java/com/financial/coa/domain/ImportJob.java with fields: id, fileName, fileFormat (enum: EXCEL/CSV), status (enum: PENDING/PROCESSING/COMPLETED/FAILED), totalRecords, processedRecords, failedRecords, errorDetails (JSON), startedAt, completedAt, createdAt, createdBy
 
 ### Repositories for US3
 
-- [ ] T038 [P] [US3] Create ImportJobRepository interface in backend/src/main/java/com/financial/coa/repository/ImportJobRepository.java
+- [x] T038 [P] [US3] Create ImportJobRepository interface in backend/src/main/java/com/financial/coa/repository/ImportJobRepository.java
 
 ### DTOs for US3
 
-- [ ] T039 [P] [US3] Create ImportRequestDto in backend/src/main/java/com/financial/coa/dto/ImportRequestDto.java with fileName, validateOnly fields
-- [ ] T040 [P] [US3] Create ImportJobResponse DTO in backend/src/main/java/com/financial/coa/dto/ImportJobResponse.java
-- [ ] T041 [P] [US3] Create ImportErrorResponse DTO in backend/src/main/java/com/financial/coa/dto/ImportErrorResponse.java extending ErrorResponse with validationErrors list
-- [ ] T042 [P] [US3] Create internal ImportRecord class in backend/src/main/java/com/financial/coa/service/ImportRecord.java to represent parsed file row
+- [x] T039 [P] [US3] Create ImportRequestDto in backend/src/main/java/com/financial/coa/dto/ImportRequestDto.java with fileName, validateOnly fields
+- [x] T040 [P] [US3] Create ImportJobResponse DTO in backend/src/main/java/com/financial/coa/dto/ImportJobResponse.java
+- [x] T041 [P] [US3] Create ImportErrorResponse DTO in backend/src/main/java/com/financial/coa/dto/ImportErrorResponse.java extending ErrorResponse with validationErrors list
+- [x] T042 [P] [US3] Create internal ImportRecord class in backend/src/main/java/com/financial/coa/service/ImportRecord.java to represent parsed file row
 
 ### Services for US3
 
-- [ ] T043 [P] [US3] Create FileParserService in backend/src/main/java/com/financial/coa/service/FileParserService.java with methods: parseExcel (using Apache POI streaming), parseCsv (using OpenCSV), detectFileFormat
-- [ ] T044 [US3] Create AccountImportService in backend/src/main/java/com/financial/coa/service/AccountImportService.java with methods: validateImportFile, performImport, createImportJob, updateImportJobStatus (depends on T043, T024)
-- [ ] T045 [US3] Implement validation logic in AccountImportService: checkDuplicateCodes, checkCircularReferences, checkMissingParents, validateFileStructure, createAccountsInDependencyOrder
-- [ ] T046 [US3] Add transaction management to AccountImportService.performImport with @Transactional and proper rollback on validation failure
+- [x] T043 [P] [US3] Create FileParserService in backend/src/main/java/com/financial/coa/service/FileParserService.java with methods: parseExcel (using Apache POI streaming), parseCsv (using OpenCSV), detectFileFormat
+- [x] T044 [US3] Create AccountImportService in backend/src/main/java/com/financial/coa/service/AccountImportService.java with methods: validateImportFile, performImport, createImportJob, updateImportJobStatus (depends on T043, T024)
+- [x] T045 [US3] Implement validation logic in AccountImportService: checkDuplicateCodes, checkCircularReferences, checkMissingParents, validateFileStructure, createAccountsInDependencyOrder
+- [x] T046 [US3] Add transaction management to AccountImportService.performImport with @Transactional and proper rollback on validation failure
 
 ### Controllers for US3
 
-- [ ] T047 [US3] Create AccountImportController in backend/src/main/java/com/financial/coa/controller/AccountImportController.java with endpoints: POST /accounts/import (multipart/form-data), GET /accounts/import/{jobId}
-- [ ] T048 [US3] Add file upload handling in AccountImportController with multipart file processing, size limit validation (10MB), and format detection
-- [ ] T049 [US3] Add OpenAPI annotations to AccountImportController with multipart/form-data schema from contracts/coa-api.yaml
+- [x] T047 [US3] Create AccountImportController in backend/src/main/java/com/financial/coa/controller/AccountImportController.java with endpoints: POST /accounts/import (multipart/form-data), GET /accounts/import/{jobId}
+- [x] T048 [US3] Add file upload handling in AccountImportController with multipart file processing, size limit validation (10MB), and format detection
+- [x] T049 [US3] Add OpenAPI annotations to AccountImportController with multipart/form-data schema from contracts/coa-api.yaml
 
 **Checkpoint**: All P1 and P2 user stories should now be independently functional
 
@@ -175,14 +175,14 @@ description: "Implementation tasks for Chart of Accounts Management"
 
 ### Service Updates for US4
 
-- [ ] T050 [US4] Add cross-scenario validation methods to AccountService in backend/src/main/java/com/financial/coa/service/AccountService.java: validateSharedAccountModification, trackScenarioUsage, listAccountScenarios
-- [ ] T051 [US4] Update AccountService.updateAccount to check sharedAcrossScenarios flag and enforce immutability rules for shared accounts
-- [ ] T052 [US4] Update AccountService.deleteAccount to prevent deletion of accounts used in multiple scenarios with detailed error message
+- [x] T050 [US4] Add cross-scenario validation methods to AccountService in backend/src/main/java/com/financial/coa/service/AccountService.java: validateSharedAccountModification, trackScenarioUsage, listAccountScenarios
+- [x] T051 [US4] Update AccountService.updateAccount to check sharedAcrossScenarios flag and enforce immutability rules for shared accounts
+- [x] T052 [US4] Update AccountService.deleteAccount to prevent deletion of accounts used in multiple scenarios with detailed error message
 
 ### Controller Updates for US4
 
-- [ ] T053 [US4] Add query endpoint GET /accounts?shared=true to AccountController for filtering shared accounts
-- [ ] T054 [US4] Update error responses in AccountController to include scenario usage information when operations are blocked
+- [x] T053 [US4] Add query endpoint GET /accounts?shared=true to AccountController for filtering shared accounts
+- [x] T054 [US4] Update error responses in AccountController to include scenario usage information when operations are blocked
 
 **Checkpoint**: All user stories (P1, P2, P3) should now be independently functional
 
@@ -192,17 +192,17 @@ description: "Implementation tasks for Chart of Accounts Management"
 
 **Purpose**: Improvements that affect multiple user stories and production readiness
 
-- [ ] T055 [P] Add comprehensive logging to all service methods with appropriate log levels (INFO for operations, DEBUG for details, ERROR for exceptions)
-- [ ] T056 [P] Add Spring Actuator health checks in backend/pom.xml and configure endpoints in application.yml
-- [ ] T057 [P] Create README.md in backend/ with setup instructions, referencing quickstart.md
-- [ ] T058 [P] Add API documentation generation configuration to expose /swagger-ui.html and /v3/api-docs endpoints
-- [ ] T059 [P] Configure HikariCP connection pool settings in application.yml for optimal performance
-- [ ] T060 [P] Add database indexes verification script to check all indexes from data-model.md are created by Flyway
-- [ ] T061 [P] Create sample Excel/CSV files in backend/src/main/resources/samples/ for testing import functionality
-- [ ] T062 Validate quickstart.md instructions by following each curl example and verifying responses match documented format
-- [ ] T063 [P] Add .gitignore entries for backend/ (target/, .mvn/, *.log files)
-- [ ] T064 [P] Update docker-compose.yml to include Spring Boot service with proper environment variables and health checks
-- [ ] T065 Code review and refactoring: ensure all classes follow Spring Boot conventions, proper exception handling, and consistent naming
+- [x] T055 [P] Add comprehensive logging to all service methods with appropriate log levels (INFO for operations, DEBUG for details, ERROR for exceptions)
+- [x] T056 [P] Add Spring Actuator health checks in backend/pom.xml and configure endpoints in application.yml
+- [x] T057 [P] Create README.md in backend/ with setup instructions, referencing quickstart.md
+- [x] T058 [P] Add API documentation generation configuration to expose /swagger-ui.html and /v3/api-docs endpoints
+- [x] T059 [P] Configure HikariCP connection pool settings in application.yml for optimal performance
+- [x] T060 [P] Add database indexes verification script to check all indexes from data-model.md are created by Flyway
+- [x] T061 [P] Create sample Excel/CSV files in backend/src/main/resources/samples/ for testing import functionality
+- [x] T062 Validate quickstart.md instructions by following each curl example and verifying responses match documented format
+- [x] T063 [P] Add .gitignore entries for backend/ (target/, .mvn/, *.log files)
+- [x] T064 [P] Update docker-compose.yml to include Spring Boot service with proper environment variables and health checks
+- [x] T065 Code review and refactoring: ensure all classes follow Spring Boot conventions, proper exception handling, and consistent naming
 
 ---
 

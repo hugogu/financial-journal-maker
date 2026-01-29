@@ -1,0 +1,22 @@
+code,name,parent_code,description,shared
+1000,Assets,,All asset accounts,false
+1100,Current Assets,1000,Short-term assets,false
+1110,Cash,1100,Cash and cash equivalents,true
+1120,Accounts Receivable,1100,Money owed by customers,false
+1200,Fixed Assets,1000,Long-term assets,false
+1210,Equipment,1200,Machinery and equipment,false
+2000,Liabilities,,All liability accounts,false
+2100,Current Liabilities,2000,Short-term obligations,false
+2110,Accounts Payable,2100,Money owed to suppliers,false
+2200,Long-term Liabilities,2000,Long-term obligations,false
+3000,Equity,,Owner equity accounts,false
+3100,Capital,3000,Owner investment,true
+3200,Retained Earnings,3000,Accumulated profits,true
+4000,Revenue,,Income accounts,false
+4100,Sales Revenue,4000,Revenue from sales,false
+4200,Service Revenue,4000,Revenue from services,false
+5000,Expenses,,Expense accounts,false
+5100,Operating Expenses,5000,Day-to-day expenses,false
+5110,Salaries,5100,Employee compensation,false
+5120,Rent,5100,Office and facility rent,false
+5130,Utilities,5100,Electricity water etc,false

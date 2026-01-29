@@ -187,4 +187,42 @@ public class AccountController {
         accountService.deleteReference(referenceId);
         return ResponseEntity.noContent().build();
     }
+    
+    // Cross-scenario endpoints (T053-T054)
+    
+    @PatchMapping("/{code}/shared")
+    @Operation(summary = "Mark account as shared",
+        description = "Marks an account as shared across scenarios or removes the shared flag")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Account updated successfully",
+            content = @Content(schema = @Schema(implementation = AccountResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Account not found"),
+        @ApiResponse(responseCode = "409", description = "Cannot modify shared account in use")
+    })
+    public ResponseEntity<AccountResponse> markAccountAsShared(
+            @Parameter(description = "Account code", example = "1000")
+            @PathVariable String code,
+            @Parameter(description = "Whether the account should be shared across scenarios")
+            @RequestParam Boolean shared) {
+        log.info("PATCH /api/v1/accounts/{}/shared?shared={}", code, shared);
+        
+        AccountResponse response = accountService.markAccountAsShared(code, shared);
+        return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/{code}/scenarios")
+    @Operation(summary = "List account scenarios",
+        description = "Retrieves list of scenarios where this account is used")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Scenarios retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Account not found")
+    })
+    public ResponseEntity<List<String>> getAccountScenarios(
+            @Parameter(description = "Account code", example = "1000")
+            @PathVariable String code) {
+        log.debug("GET /api/v1/accounts/{}/scenarios", code);
+        
+        List<String> scenarios = accountService.listAccountScenarios(code);
+        return ResponseEntity.ok(scenarios);
+    }
 }

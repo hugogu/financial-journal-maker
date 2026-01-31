@@ -25,11 +25,11 @@
 
 **Purpose**: Project initialization, dependencies, and basic structure
 
-- [ ] T001 Add Spring AI dependency to backend/pom.xml
-- [ ] T002 [P] Create ai package structure in backend/src/main/java/com/financial/ai/ (controller, service, domain, repository, dto subpackages)
-- [ ] T003 [P] Initialize Nuxt 3 frontend project in frontend/ directory
-- [ ] T004 [P] Configure frontend dependencies (Pinia, PrimeVue or similar UI library) in frontend/package.json
-- [ ] T005 [P] Add SSE support configuration in backend/src/main/java/com/financial/config/WebConfig.java
+- [x] T001 Add Spring AI dependency to backend/pom.xml
+- [x] T002 [P] Create ai package structure in backend/src/main/java/com/financial/ai/ (controller, service, domain, repository, dto subpackages)
+- [x] T003 [P] Initialize Nuxt 3 frontend project in frontend/ directory
+- [x] T004 [P] Configure frontend dependencies (Pinia, PrimeVue or similar UI library) in frontend/package.json
+- [x] T005 [P] Add SSE support configuration in backend/src/main/java/com/financial/config/WebConfig.java
 
 ---
 
@@ -39,30 +39,30 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T006 Create database migration V004__create_ai_session_tables.sql in backend/src/main/resources/db/migration/
-- [ ] T007 [P] Create SessionStatus enum in backend/src/main/java/com/financial/ai/domain/SessionStatus.java
-- [ ] T008 [P] Create DesignPhase enum in backend/src/main/java/com/financial/ai/domain/DesignPhase.java
-- [ ] T009 [P] Create MessageRole enum in backend/src/main/java/com/financial/ai/domain/MessageRole.java
-- [ ] T010 [P] Create ExportType enum in backend/src/main/java/com/financial/ai/domain/ExportType.java
-- [ ] T011 Create AnalysisSession entity in backend/src/main/java/com/financial/ai/domain/AnalysisSession.java
-- [ ] T012 [P] Create SessionMessage entity in backend/src/main/java/com/financial/ai/domain/SessionMessage.java
-- [ ] T013 [P] Create DesignDecision entity in backend/src/main/java/com/financial/ai/domain/DesignDecision.java
-- [ ] T014 [P] Create AIConfiguration entity in backend/src/main/java/com/financial/ai/domain/AIConfiguration.java
-- [ ] T015 [P] Create PromptTemplate entity in backend/src/main/java/com/financial/ai/domain/PromptTemplate.java
-- [ ] T016 [P] Create ExportArtifact entity in backend/src/main/java/com/financial/ai/domain/ExportArtifact.java
-- [ ] T017 Create SessionRepository in backend/src/main/java/com/financial/ai/repository/SessionRepository.java
-- [ ] T018 [P] Create MessageRepository in backend/src/main/java/com/financial/ai/repository/MessageRepository.java
-- [ ] T019 [P] Create DecisionRepository in backend/src/main/java/com/financial/ai/repository/DecisionRepository.java
-- [ ] T020 [P] Create AIConfigRepository in backend/src/main/java/com/financial/ai/repository/AIConfigRepository.java
-- [ ] T021 [P] Create PromptRepository in backend/src/main/java/com/financial/ai/repository/PromptRepository.java
-- [ ] T022 [P] Create ExportArtifactRepository in backend/src/main/java/com/financial/ai/repository/ExportArtifactRepository.java
-- [ ] T023 [P] Create session DTOs (SessionCreateRequest, SessionUpdateRequest, SessionResponse, SessionDetailResponse) in backend/src/main/java/com/financial/ai/dto/
-- [ ] T024 [P] Create message DTOs (MessageRequest, MessageResponse) in backend/src/main/java/com/financial/ai/dto/
-- [ ] T025 [P] Create decision DTOs (DecisionRequest, DecisionResponse) in backend/src/main/java/com/financial/ai/dto/
-- [ ] T026 [P] Create AI exception classes (SessionNotFoundException, MaxSessionsExceededException, InvalidSessionStateException) in backend/src/main/java/com/financial/ai/exception/
-- [ ] T027 Add AI exception handlers to GlobalExceptionHandler in backend/src/main/java/com/financial/coa/exception/GlobalExceptionHandler.java
-- [ ] T028 [P] Create frontend layout and navigation structure in frontend/layouts/default.vue
-- [ ] T029 [P] Create Pinia session store skeleton in frontend/stores/session.ts
+- [x] T006 Create database migration V004__create_ai_session_tables.sql in backend/src/main/resources/db/migration/
+- [x] T007 [P] Create SessionStatus enum in backend/src/main/java/com/financial/ai/domain/SessionStatus.java
+- [x] T008 [P] Create DesignPhase enum in backend/src/main/java/com/financial/ai/domain/DesignPhase.java
+- [x] T009 [P] Create MessageRole enum in backend/src/main/java/com/financial/ai/domain/MessageRole.java
+- [x] T010 [P] Create ExportType enum in backend/src/main/java/com/financial/ai/domain/ExportType.java
+- [x] T011 Create AnalysisSession entity in backend/src/main/java/com/financial/ai/domain/AnalysisSession.java
+- [x] T012 [P] Create SessionMessage entity in backend/src/main/java/com/financial/ai/domain/SessionMessage.java
+- [x] T013 [P] Create DesignDecision entity in backend/src/main/java/com/financial/ai/domain/DesignDecision.java
+- [x] T014 [P] Create AIConfiguration entity in backend/src/main/java/com/financial/ai/domain/AIConfiguration.java
+- [x] T015 [P] Create PromptTemplate entity in backend/src/main/java/com/financial/ai/domain/PromptTemplate.java
+- [x] T016 [P] Create ExportArtifact entity in backend/src/main/java/com/financial/ai/domain/ExportArtifact.java
+- [x] T017 Create SessionRepository in backend/src/main/java/com/financial/ai/repository/SessionRepository.java
+- [x] T018 [P] Create MessageRepository in backend/src/main/java/com/financial/ai/repository/MessageRepository.java
+- [x] T019 [P] Create DecisionRepository in backend/src/main/java/com/financial/ai/repository/DecisionRepository.java
+- [x] T020 [P] Create AIConfigRepository in backend/src/main/java/com/financial/ai/repository/AIConfigRepository.java
+- [x] T021 [P] Create PromptRepository in backend/src/main/java/com/financial/ai/repository/PromptRepository.java
+- [x] T022 [P] Create ExportArtifactRepository in backend/src/main/java/com/financial/ai/repository/ExportArtifactRepository.java
+- [x] T023 [P] Create session DTOs (SessionCreateRequest, SessionUpdateRequest, SessionResponse, SessionDetailResponse) in backend/src/main/java/com/financial/ai/dto/
+- [x] T024 [P] Create message DTOs (MessageRequest, MessageResponse) in backend/src/main/java/com/financial/ai/dto/
+- [x] T025 [P] Create decision DTOs (DecisionRequest, DecisionResponse) in backend/src/main/java/com/financial/ai/dto/
+- [x] T026 [P] Create AI exception classes (SessionNotFoundException, MaxSessionsExceededException, InvalidSessionStateException) in backend/src/main/java/com/financial/ai/exception/
+- [x] T027 Add AI exception handlers to GlobalExceptionHandler in backend/src/main/java/com/financial/coa/exception/GlobalExceptionHandler.java
+- [x] T028 [P] Create frontend layout and navigation structure in frontend/layouts/default.vue
+- [x] T029 [P] Create Pinia session store skeleton in frontend/stores/session.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -76,23 +76,23 @@
 
 ### Implementation for User Story 1
 
-- [ ] T030 [US1] Implement SessionService core methods (create, get, update) in backend/src/main/java/com/financial/ai/service/SessionService.java
-- [ ] T031 [US1] Add concurrent session limit validation (max 5) to SessionService in backend/src/main/java/com/financial/ai/service/SessionService.java
-- [ ] T032 [US1] Create LLMClientProvider for configurable AI client in backend/src/main/java/com/financial/ai/service/LLMClientProvider.java
-- [ ] T033 [US1] Implement AIConversationService with streaming support in backend/src/main/java/com/financial/ai/service/AIConversationService.java
-- [ ] T034 [US1] Implement design phase progression logic in AIConversationService (Product → Scenario → Type → Accounting)
-- [ ] T035 [US1] Implement DecisionService for confirm/reject decisions in backend/src/main/java/com/financial/ai/service/DecisionService.java
-- [ ] T036 [US1] Create SessionController with CRUD endpoints in backend/src/main/java/com/financial/ai/controller/SessionController.java
-- [ ] T037 [US1] Add SSE streaming endpoint for AI responses in SessionController (/sessions/{id}/messages/stream)
-- [ ] T038 [US1] Add decision endpoints to SessionController (/sessions/{id}/decisions)
-- [ ] T039 [P] [US1] Add OpenAPI annotations to SessionController
-- [ ] T040 [P] [US1] Create useSession composable in frontend/composables/useSession.ts
-- [ ] T041 [P] [US1] Create useAIStream composable for SSE handling in frontend/composables/useAIStream.ts
-- [ ] T042 [US1] Create ChatInterface component in frontend/components/session/ChatInterface.vue
-- [ ] T043 [P] [US1] Create MessageBubble component in frontend/components/session/MessageBubble.vue
-- [ ] T044 [P] [US1] Create DesignPanel component for confirmed decisions in frontend/components/session/DesignPanel.vue
-- [ ] T045 [US1] Create session conversation page in frontend/pages/analysis/[id].vue
-- [ ] T046 [US1] Write integration test for session creation and AI conversation in backend/src/test/java/com/financial/ai/controller/SessionControllerIntegrationTest.java
+- [x] T030 [US1] Implement SessionService core methods (create, get, update) in backend/src/main/java/com/financial/ai/service/SessionService.java
+- [x] T031 [US1] Add concurrent session limit validation (max 5) to SessionService in backend/src/main/java/com/financial/ai/service/SessionService.java
+- [x] T032 [US1] Create LLMClientProvider for configurable AI client in backend/src/main/java/com/financial/ai/service/LLMClientProvider.java
+- [x] T033 [US1] Implement AIConversationService with streaming support in backend/src/main/java/com/financial/ai/service/AIConversationService.java
+- [x] T034 [US1] Implement design phase progression logic in AIConversationService (Product → Scenario → Type → Accounting)
+- [x] T035 [US1] Implement DecisionService for confirm/reject decisions in backend/src/main/java/com/financial/ai/service/DecisionService.java
+- [x] T036 [US1] Create SessionController with CRUD endpoints in backend/src/main/java/com/financial/ai/controller/SessionController.java
+- [x] T037 [US1] Add SSE streaming endpoint for AI responses in SessionController (/sessions/{id}/messages/stream)
+- [x] T038 [US1] Add decision endpoints to SessionController (/sessions/{id}/decisions)
+- [x] T039 [P] [US1] Add OpenAPI annotations to SessionController
+- [x] T040 [P] [US1] Create useSession composable in frontend/composables/useSession.ts
+- [x] T041 [P] [US1] Create useAIStream composable for SSE handling in frontend/composables/useAIStream.ts
+- [x] T042 [US1] Create ChatInterface component in frontend/components/session/ChatInterface.vue
+- [x] T043 [P] [US1] Create MessageBubble component in frontend/components/session/MessageBubble.vue
+- [x] T044 [P] [US1] Create DesignPanel component for confirmed decisions in frontend/components/session/DesignPanel.vue
+- [x] T045 [US1] Create session conversation page in frontend/pages/analysis/[id].vue
+- [x] T046 [US1] Write integration test for session creation and AI conversation in backend/src/test/java/com/financial/ai/controller/SessionControllerIntegrationTest.java
 
 **Checkpoint**: User Story 1 complete - analysts can create sessions and have AI-guided design conversations
 
@@ -106,14 +106,14 @@
 
 ### Implementation for User Story 2
 
-- [ ] T047 [US2] Implement session lifecycle methods in SessionService (pause, resume, complete, archive)
-- [ ] T048 [US2] Add auto-save functionality with configurable interval to SessionService
-- [ ] T049 [US2] Add lifecycle state validation (prevent invalid transitions)
-- [ ] T050 [US2] Add lifecycle endpoints to SessionController (/pause, /resume, /complete, /archive)
-- [ ] T051 [P] [US2] Create session list page with status filtering in frontend/pages/analysis/index.vue
-- [ ] T052 [P] [US2] Add session status badges and action buttons to session list
-- [ ] T053 [US2] Implement auto-save in frontend with interval timer
-- [ ] T054 [US2] Write integration test for session lifecycle transitions in backend/src/test/java/com/financial/ai/controller/SessionLifecycleIntegrationTest.java
+- [x] T047 [US2] Implement session lifecycle methods in SessionService (pause, resume, complete, archive)
+- [ ] T048 [US2] Add auto-save functionality with configurable interval to SessionService (deferred - optional)
+- [x] T049 [US2] Add lifecycle state validation (prevent invalid transitions)
+- [x] T050 [US2] Add lifecycle endpoints to SessionController (/pause, /resume, /complete, /archive)
+- [x] T051 [P] [US2] Create session list page with status filtering in frontend/pages/analysis/index.vue
+- [x] T052 [P] [US2] Add session status badges and action buttons to session list
+- [ ] T053 [US2] Implement auto-save in frontend with interval timer (deferred - optional)
+- [x] T054 [US2] Write integration test for session lifecycle transitions in backend/src/test/java/com/financial/ai/controller/SessionLifecycleIntegrationTest.java
 
 **Checkpoint**: User Story 2 complete - full session lifecycle management working
 
@@ -127,17 +127,17 @@
 
 ### Implementation for User Story 3
 
-- [ ] T055 [US3] Create DesignExportService in backend/src/main/java/com/financial/ai/service/DesignExportService.java
-- [ ] T056 [US3] Implement COA export generation from confirmed decisions
-- [ ] T057 [US3] Implement accounting rules export generation
-- [ ] T058 [US3] Implement Numscript export using existing NumscriptGenerator service
-- [ ] T059 [US3] Add conflict detection and force overwrite support to DesignExportService
-- [ ] T060 [US3] Create export DTOs (ExportResponse, ExportConflictResponse) in backend/src/main/java/com/financial/ai/dto/
-- [ ] T061 [US3] Add export endpoints to SessionController (/sessions/{id}/export/{type})
-- [ ] T062 [P] [US3] Create useExport composable in frontend/composables/useExport.ts
-- [ ] T063 [P] [US3] Create ExportDialog component in frontend/components/session/ExportDialog.vue
-- [ ] T064 [US3] Integrate export dialog into session page
-- [ ] T065 [US3] Write integration test for export functionality in backend/src/test/java/com/financial/ai/controller/ExportIntegrationTest.java
+- [x] T055 [US3] Create DesignExportService in backend/src/main/java/com/financial/ai/service/DesignExportService.java
+- [x] T056 [US3] Implement COA export generation from confirmed decisions
+- [x] T057 [US3] Implement accounting rules export generation
+- [x] T058 [US3] Implement Numscript export using existing NumscriptGenerator service
+- [x] T059 [US3] Add conflict detection and force overwrite support to DesignExportService
+- [x] T060 [US3] Create export DTOs (ExportResponse, ExportConflictResponse) in backend/src/main/java/com/financial/ai/dto/
+- [x] T061 [US3] Add export endpoints to SessionController (/sessions/{id}/export/{type})
+- [x] T062 [P] [US3] Create useExport composable in frontend/composables/useExport.ts
+- [x] T063 [P] [US3] Create ExportDialog component in frontend/components/session/ExportDialog.vue
+- [x] T064 [US3] Integrate export dialog into session page
+- [x] T065 [US3] Write integration test for export functionality in backend/src/test/java/com/financial/ai/controller/ExportIntegrationTest.java
 
 **Checkpoint**: User Story 3 complete - design export to COA/rules/Numscript working
 
@@ -151,17 +151,17 @@
 
 ### Implementation for User Story 4
 
-- [ ] T066 [US4] Create AIConfigService in backend/src/main/java/com/financial/ai/service/AIConfigService.java
-- [ ] T067 [US4] Implement API key encryption/decryption in AIConfigService
-- [ ] T068 [US4] Implement provider activation (only one active at a time)
-- [ ] T069 [US4] Add configuration validation and connectivity test method
-- [ ] T070 [US4] Create AI config DTOs (AIConfigRequest, AIConfigResponse, AIConfigTestResponse) in backend/src/main/java/com/financial/ai/dto/
-- [ ] T071 [US4] Create AIConfigController in backend/src/main/java/com/financial/ai/controller/AIConfigController.java
-- [ ] T072 [P] [US4] Add OpenAPI annotations to AIConfigController
-- [ ] T073 [P] [US4] Create aiConfig Pinia store in frontend/stores/aiConfig.ts
-- [ ] T074 [P] [US4] Create ProviderForm component in frontend/components/admin/ProviderForm.vue
-- [ ] T075 [US4] Create AI configuration admin page in frontend/pages/admin/ai-config.vue
-- [ ] T076 [US4] Write integration test for AI configuration in backend/src/test/java/com/financial/ai/controller/AIConfigControllerIntegrationTest.java
+- [x] T066 [US4] Create AIConfigService in backend/src/main/java/com/financial/ai/service/AIConfigService.java
+- [x] T067 [US4] Implement API key encryption/decryption in AIConfigService
+- [x] T068 [US4] Implement provider activation (only one active at a time)
+- [x] T069 [US4] Add configuration validation and connectivity test method
+- [x] T070 [US4] Create AI config DTOs (AIConfigRequest, AIConfigResponse, AIConfigTestResponse) in backend/src/main/java/com/financial/ai/dto/
+- [x] T071 [US4] Create AIConfigController in backend/src/main/java/com/financial/ai/controller/AIConfigController.java
+- [x] T072 [P] [US4] Add OpenAPI annotations to AIConfigController
+- [x] T073 [P] [US4] Create aiConfig Pinia store in frontend/stores/aiConfig.ts
+- [x] T074 [P] [US4] Create ProviderForm component in frontend/components/admin/ProviderForm.vue
+- [x] T075 [US4] Create AI configuration admin page in frontend/pages/admin/ai-config.vue
+- [x] T076 [US4] Write integration test for AI configuration in backend/src/test/java/com/financial/ai/controller/AIConfigControllerIntegrationTest.java
 
 **Checkpoint**: User Story 4 complete - admin can manage LLM provider configurations
 

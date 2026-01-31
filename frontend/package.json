@@ -1,0 +1,29 @@
+{
+  "name": "financial-journal-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "pinia": "^2.1.7",
+    "primevue": "^3.49.1",
+    "primeicons": "^6.0.1",
+    "nuxt": "^3.10.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "^1.0.0",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.0",
+    "vue-tsc": "^1.8.0"
+  }
+}

@@ -360,6 +360,57 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(com.financial.ai.exception.SessionNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleSessionNotFound(
+            com.financial.ai.exception.SessionNotFoundException ex, HttpServletRequest request) {
+        log.warn("Session not found: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("SESSION_NOT_FOUND")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(com.financial.ai.exception.MaxSessionsExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMaxSessionsExceeded(
+            com.financial.ai.exception.MaxSessionsExceededException ex, HttpServletRequest request) {
+        log.warn("Max sessions exceeded: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("MAX_SESSIONS_EXCEEDED")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(com.financial.ai.exception.InvalidSessionStateException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidSessionState(
+            com.financial.ai.exception.InvalidSessionStateException ex, HttpServletRequest request) {
+        log.warn("Invalid session state: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("INVALID_SESSION_STATE")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
     @ExceptionHandler(RulesException.class)
     public ResponseEntity<ErrorResponse> handleRulesException(
             RulesException ex, HttpServletRequest request) {

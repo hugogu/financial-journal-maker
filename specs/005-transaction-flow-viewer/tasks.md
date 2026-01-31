@@ -24,10 +24,10 @@
 
 **Purpose**: Project initialization, dependencies, and base structure
 
-- [ ] T001 Install frontend dependencies (@vue-flow/core, @vue-flow/background, dagre, prismjs) in frontend/package.json
-- [ ] T002 [P] Create backend package structure for transactionflow module in backend/src/main/java/com/financial/transactionflow/
-- [ ] T003 [P] Create frontend directory structure for flows and preview components in frontend/components/flows/ and frontend/components/preview/
-- [ ] T004 [P] Create Numscript Prism.js language definition plugin in frontend/plugins/prism-numscript.ts
+- [x] T001 Install frontend dependencies (@vue-flow/core, @vue-flow/background, dagre, prismjs) in frontend/package.json
+- [x] T002 [P] Create backend package structure for transactionflow module in backend/src/main/java/com/financial/transactionflow/
+- [x] T003 [P] Create frontend directory structure for flows and preview components in frontend/components/flows/ and frontend/components/preview/
+- [x] T004 [P] Create Numscript Prism.js language definition plugin in frontend/plugins/prism-numscript.ts
 
 ---
 
@@ -37,18 +37,18 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 [P] Create AccountType and AccountState enums in backend/src/main/java/com/financial/transactionflow/dto/AccountType.java and AccountState.java
-- [ ] T006 [P] Create FlowType enum (CASH, INFO) in backend/src/main/java/com/financial/transactionflow/dto/FlowType.java
-- [ ] T007 [P] Create Position record in backend/src/main/java/com/financial/transactionflow/dto/Position.java
-- [ ] T008 [P] Create AccountNodeDto in backend/src/main/java/com/financial/transactionflow/dto/AccountNodeDto.java
-- [ ] T009 [P] Create JournalEntryDisplayDto in backend/src/main/java/com/financial/transactionflow/dto/JournalEntryDisplayDto.java
-- [ ] T010 [P] Create FlowConnectionDto in backend/src/main/java/com/financial/transactionflow/dto/FlowConnectionDto.java
-- [ ] T011 [P] Create ProductSummary DTO in backend/src/main/java/com/financial/transactionflow/dto/ProductSummary.java
-- [ ] T012 [P] Create ScenarioSummary DTO in backend/src/main/java/com/financial/transactionflow/dto/ScenarioSummary.java
-- [ ] T013 [P] Create TransactionFlowSummary DTO in backend/src/main/java/com/financial/transactionflow/dto/TransactionFlowSummary.java
-- [ ] T014 Create TransactionFlowView DTO (depends on T008-T010) in backend/src/main/java/com/financial/transactionflow/dto/TransactionFlowView.java
-- [ ] T015 Create base TransactionFlowService with DesignDecision repository injection in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
-- [ ] T016 [P] Create useTransactionFlows composable with base API methods in frontend/composables/useTransactionFlows.ts
+- [x] T005 [P] Create AccountType and AccountState enums in backend/src/main/java/com/financial/transactionflow/dto/AccountType.java and AccountState.java
+- [x] T006 [P] Create FlowType enum (CASH, INFO) in backend/src/main/java/com/financial/transactionflow/dto/FlowType.java
+- [x] T007 [P] Create Position record in backend/src/main/java/com/financial/transactionflow/dto/Position.java
+- [x] T008 [P] Create AccountNodeDto in backend/src/main/java/com/financial/transactionflow/dto/AccountNodeDto.java
+- [x] T009 [P] Create JournalEntryDisplayDto in backend/src/main/java/com/financial/transactionflow/dto/JournalEntryDisplayDto.java
+- [x] T010 [P] Create FlowConnectionDto in backend/src/main/java/com/financial/transactionflow/dto/FlowConnectionDto.java
+- [x] T011 [P] Create ProductSummary DTO in backend/src/main/java/com/financial/transactionflow/dto/ProductSummary.java
+- [x] T012 [P] Create ScenarioSummary DTO in backend/src/main/java/com/financial/transactionflow/dto/ScenarioSummary.java
+- [x] T013 [P] Create TransactionFlowSummary DTO in backend/src/main/java/com/financial/transactionflow/dto/TransactionFlowSummary.java
+- [x] T014 Create TransactionFlowView DTO (depends on T008-T010) in backend/src/main/java/com/financial/transactionflow/dto/TransactionFlowView.java
+- [x] T015 Create base TransactionFlowService with DesignDecision repository injection in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
+- [x] T016 [P] Create useTransactionFlows composable with base API methods in frontend/composables/useTransactionFlows.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 

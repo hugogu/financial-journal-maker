@@ -74,7 +74,7 @@
     </div>
 
     <div v-if="showForm" class="modal-overlay" @click.self="closeForm">
-      <ProviderForm 
+      <AdminProviderForm 
         :config="editingConfig"
         @submit="handleSubmit"
         @cancel="closeForm"

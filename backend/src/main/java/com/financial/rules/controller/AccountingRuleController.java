@@ -208,4 +208,55 @@ public class AccountingRuleController {
         RuleResponse response = ruleService.rollbackToVersion(id, versionNumber);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/{id}/generate")
+    @Operation(summary = "Generate Numscript DSL", description = "Generates Formance Ledger Numscript DSL from an accounting rule")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Numscript generated successfully"),
+            @ApiResponse(responseCode = "400", description = "Rule cannot be converted to Numscript"),
+            @ApiResponse(responseCode = "404", description = "Rule not found")
+    })
+    public ResponseEntity<GenerationResponse> generateNumscript(
+            @Parameter(description = "Rule ID") @PathVariable Long id) {
+        log.info("REST request to generate Numscript for rule: {}", id);
+        GenerationResponse response = ruleService.generateNumscript(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/validate-expression")
+    @Operation(summary = "Validate expression syntax", description = "Validates an amount expression against a variable schema")
+    @ApiResponse(responseCode = "200", description = "Validation result returned")
+    public ResponseEntity<ExpressionValidationResponse> validateExpression(
+            @Valid @RequestBody ExpressionValidationRequest request) {
+        log.debug("REST request to validate expression: {}", request.getExpression());
+        ExpressionValidationResponse response = ruleService.validateExpression(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/simulate")
+    @Operation(summary = "Simulate rule execution", description = "Simulates rule execution with sample event data to preview journal entries")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Simulation completed"),
+            @ApiResponse(responseCode = "404", description = "Rule not found")
+    })
+    public ResponseEntity<SimulationResponse> simulateRule(
+            @Parameter(description = "Rule ID") @PathVariable Long id,
+            @Valid @RequestBody SimulationRequest request) {
+        log.info("REST request to simulate rule: {}", id);
+        SimulationResponse response = ruleService.simulateRule(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/references")
+    @Operation(summary = "Get rule references", description = "Returns scenarios and contexts that reference this rule")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "References retrieved"),
+            @ApiResponse(responseCode = "404", description = "Rule not found")
+    })
+    public ResponseEntity<RuleReferenceResponse> getRuleReferences(
+            @Parameter(description = "Rule ID") @PathVariable Long id) {
+        log.debug("REST request to get references for rule: {}", id);
+        RuleReferenceResponse response = ruleService.getRuleReferences(id);
+        return ResponseEntity.ok(response);
+    }
 }

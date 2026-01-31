@@ -27,6 +27,10 @@ public class AccountingRuleService {
     private final AccountingRuleVersionRepository versionRepository;
     private final EntryTemplateRepository templateRepository;
     private final EntryLineRepository lineRepository;
+    private final TriggerConditionService triggerConditionService;
+    private final RuleSimulationService simulationService;
+    private final RuleReferenceService referenceService;
+    private final NumscriptGenerator numscriptGenerator;
     private final ExpressionParser expressionParser;
     private final ObjectMapper objectMapper;
 
@@ -150,7 +154,6 @@ public class AccountingRuleService {
         }
 
         AccountingRule source = findRuleById(id);
-        List<TriggerCondition> sourceConditions = getTriggerConditions(id);
 
         AccountingRule clone = AccountingRule.builder()
                 .code(newCode)
@@ -167,16 +170,7 @@ public class AccountingRuleService {
             cloneEntryTemplate(source.getEntryTemplate(), clone);
         }
 
-        List<TriggerCondition> clonedConditions = new ArrayList<>();
-        for (TriggerCondition condition : sourceConditions) {
-            TriggerCondition cloned = TriggerCondition.builder()
-                    .ruleId(clone.getId())
-                    .conditionJson(condition.getConditionJson())
-                    .description(condition.getDescription())
-                    .build();
-            clonedConditions.add(cloned);
-        }
-        saveTriggerConditionsEntities(clonedConditions);
+        List<TriggerCondition> clonedConditions = triggerConditionService.cloneConditions(source.getId(), clone.getId());
 
         createVersion(clone, "Cloned from rule: " + source.getCode());
 
@@ -432,31 +426,21 @@ public class AccountingRuleService {
     }
 
     private List<TriggerCondition> getTriggerConditions(Long ruleId) {
-        return new ArrayList<>();
+        return triggerConditionService.getConditions(ruleId).stream()
+                .map(response -> TriggerCondition.builder()
+                        .id(response.getId())
+                        .ruleId(ruleId)
+                        .description(response.getDescription())
+                        .build())
+                .toList();
     }
 
     private List<TriggerCondition> saveTriggerConditions(Long ruleId, List<TriggerConditionRequest> requests) {
-        List<TriggerCondition> conditions = new ArrayList<>();
-        for (TriggerConditionRequest request : requests) {
-            try {
-                String json = objectMapper.writeValueAsString(request.getConditionJson());
-                TriggerCondition condition = TriggerCondition.builder()
-                        .ruleId(ruleId)
-                        .conditionJson(json)
-                        .description(request.getDescription())
-                        .build();
-                conditions.add(condition);
-            } catch (JsonProcessingException e) {
-                throw new RulesException("Failed to serialize condition JSON", e);
-            }
-        }
-        return conditions;
-    }
-
-    private void saveTriggerConditionsEntities(List<TriggerCondition> conditions) {
+        return triggerConditionService.saveConditions(ruleId, requests);
     }
 
     private void deleteTriggerConditions(Long ruleId) {
+        triggerConditionService.deleteConditions(ruleId);
     }
 
     private void createVersion(AccountingRule rule, String changeDescription) {
@@ -483,4 +467,30 @@ public class AccountingRuleService {
     }
 
     private record RuleSnapshot(String code, String name, String description, String status) {}
+
+    public GenerationResponse generateNumscript(Long id) {
+        log.info("Generating Numscript for rule: {}", id);
+        AccountingRule rule = findRuleById(id);
+        return numscriptGenerator.generate(rule);
+    }
+
+    public ExpressionValidationResponse validateExpression(ExpressionValidationRequest request) {
+        ExpressionParser.ValidationResult result = expressionParser.validate(
+                request.getExpression(), 
+                request.getVariableSchema());
+        return ExpressionValidationResponse.fromParserResult(result);
+    }
+
+    @Transactional(readOnly = true)
+    public SimulationResponse simulateRule(Long id, SimulationRequest request) {
+        log.info("Simulating rule: {}", id);
+        AccountingRule rule = findRuleById(id);
+        return simulationService.simulate(rule, request.getEventData());
+    }
+
+    @Transactional(readOnly = true)
+    public RuleReferenceResponse getRuleReferences(Long id) {
+        findRuleById(id);
+        return referenceService.getReferences(id);
+    }
 }

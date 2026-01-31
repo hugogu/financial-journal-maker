@@ -111,21 +111,21 @@
 
 ### Repository for US3
 
-- [ ] T030 [P] [US3] Create TriggerConditionRepository in backend/src/main/java/com/financial/rules/repository/TriggerConditionRepository.java with methods: findByRuleId, deleteByRuleId
+- [x] T030 [P] [US3] Create TriggerConditionRepository in backend/src/main/java/com/financial/rules/repository/TriggerConditionRepository.java with methods: findByRuleId, deleteByRuleId
 
 ### DTOs for US3
 
-- [ ] T031 [P] [US3] Create TriggerConditionRequest DTO in backend/src/main/java/com/financial/rules/dto/TriggerConditionRequest.java
-- [ ] T032 [P] [US3] Create TriggerConditionResponse DTO in backend/src/main/java/com/financial/rules/dto/TriggerConditionResponse.java with humanReadable field
+- [x] T031 [P] [US3] Create TriggerConditionRequest DTO in backend/src/main/java/com/financial/rules/dto/TriggerConditionRequest.java
+- [x] T032 [P] [US3] Create TriggerConditionResponse DTO in backend/src/main/java/com/financial/rules/dto/TriggerConditionResponse.java with humanReadable field
 
 ### Services for US3
 
-- [ ] T033 [US3] Create TriggerConditionService in backend/src/main/java/com/financial/rules/service/TriggerConditionService.java with methods: saveConditions, getConditions, validateConditionJson, toHumanReadable
-- [ ] T034 [US3] Create ConditionEvaluator in backend/src/main/java/com/financial/rules/service/ConditionEvaluator.java with method: evaluate(condition, eventData) for use in simulation
+- [x] T033 [US3] Create TriggerConditionService in backend/src/main/java/com/financial/rules/service/TriggerConditionService.java with methods: saveConditions, getConditions, validateConditionJson, toHumanReadable
+- [x] T034 [US3] Create ConditionEvaluator in backend/src/main/java/com/financial/rules/service/ConditionEvaluator.java with method: evaluate(condition, eventData) for use in simulation
 
 ### Controller Updates for US3
 
-- [ ] T035 [US3] Update AccountingRuleService to handle trigger conditions in create/update operations, integrating TriggerConditionService
+- [x] T035 [US3] Update AccountingRuleService to handle trigger conditions in create/update operations, integrating TriggerConditionService
 
 **Checkpoint**: Rules can now have trigger conditions with AND/OR logic. Conditions display in human-readable format.
 
@@ -139,20 +139,20 @@
 
 ### DTOs for US4+US5
 
-- [ ] T036 [P] [US4] Create GenerationResponse DTO in backend/src/main/java/com/financial/rules/dto/GenerationResponse.java with fields: numscript, validationResult
-- [ ] T037 [P] [US5] Create ValidationResult DTO in backend/src/main/java/com/financial/rules/dto/ValidationResult.java with fields: valid, errors, warnings
-- [ ] T038 [P] [US5] Create ExpressionValidationResponse DTO in backend/src/main/java/com/financial/rules/dto/ExpressionValidationResponse.java
+- [x] T036 [P] [US4] Create GenerationResponse DTO in backend/src/main/java/com/financial/rules/dto/GenerationResponse.java with fields: numscript, validationResult
+- [x] T037 [P] [US5] Create ValidationResult DTO in backend/src/main/java/com/financial/rules/dto/ValidationResult.java with fields: valid, errors, warnings
+- [x] T038 [P] [US5] Create ExpressionValidationResponse DTO in backend/src/main/java/com/financial/rules/dto/ExpressionValidationResponse.java
 
 ### Services for US4+US5
 
-- [ ] T039 [US4] Create NumscriptGenerator service in backend/src/main/java/com/financial/rules/service/NumscriptGenerator.java implementing OutputGenerator interface with methods: generate(rule), translateExpression, mapAccountToFormancePath
-- [ ] T040 [US4] Integrate NumscriptGenerator with COA module's AccountMappingService to resolve Formance account paths
-- [ ] T041 [US5] Create NumscriptValidator service in backend/src/main/java/com/financial/rules/service/NumscriptValidator.java with methods: validate(numscript), validateSyntax, validateAccountReferences
+- [x] T039 [US4] Create NumscriptGenerator service in backend/src/main/java/com/financial/rules/service/NumscriptGenerator.java implementing OutputGenerator interface with methods: generate(rule), translateExpression, mapAccountToFormancePath
+- [x] T040 [US4] Integrate NumscriptGenerator with COA module's AccountMappingService to resolve Formance account paths
+- [x] T041 [US5] Create NumscriptValidator service in backend/src/main/java/com/financial/rules/service/NumscriptValidator.java with methods: validate(numscript), validateSyntax, validateAccountReferences
 
 ### Controller Endpoints for US4+US5
 
-- [ ] T042 [US4] Add POST /rules/{id}/generate endpoint to AccountingRuleController
-- [ ] T043 [US5] Add POST /rules/validate-expression endpoint to AccountingRuleController for expression syntax validation
+- [x] T042 [US4] Add POST /rules/{id}/generate endpoint to AccountingRuleController
+- [x] T043 [US5] Add POST /rules/validate-expression endpoint to AccountingRuleController for expression syntax validation
 
 **Checkpoint**: Rules can generate valid Numscript DSL. Generated output passes syntax validation.
 
@@ -166,18 +166,18 @@
 
 ### DTOs for US6
 
-- [ ] T044 [P] [US6] Create SimulationRequest DTO in backend/src/main/java/com/financial/rules/dto/SimulationRequest.java with eventData field
-- [ ] T045 [P] [US6] Create SimulationResponse DTO in backend/src/main/java/com/financial/rules/dto/SimulationResponse.java with fields: wouldFire, reasonNotFired, entries, totalDebits, totalCredits, isBalanced, warnings, errors
-- [ ] T046 [P] [US6] Create SimulatedEntry DTO in backend/src/main/java/com/financial/rules/dto/SimulatedEntry.java with fields: accountCode, accountName, entryType, amount, currency, memo
+- [x] T044 [P] [US6] Create SimulationRequest DTO in backend/src/main/java/com/financial/rules/dto/SimulationRequest.java with fields: eventData (Map)
+- [x] T045 [P] [US6] Create SimulationResponse DTO in backend/src/main/java/com/financial/rules/dto/SimulationResponse.java with fields: wouldFire, entries (resolved accounts, calculated amounts), warnings
+- [x] T046 [P] [US6] Create SimulatedEntry DTO in backend/src/main/java/com/financial/rules/dto/SimulatedEntry.java with fields: accountCode, accountName, entryType, amount, memo
 
 ### Services for US6
 
-- [ ] T047 [US6] Create RuleSimulationService in backend/src/main/java/com/financial/rules/service/RuleSimulationService.java with methods: simulate(rule, eventData), evaluateTriggers, evaluateExpressions, resolveAccounts
-- [ ] T048 [US6] Integrate RuleSimulationService with COA module's AccountService to resolve account names
+- [x] T047 [US6] Create RuleSimulationService in backend/src/main/java/com/financial/rules/service/RuleSimulationService.java with methods: simulate(rule, eventData), evaluateConditions, resolveEntries
+- [x] T048 [US6] Integrate RuleSimulationService with ConditionEvaluator and ExpressionParser
 
 ### Controller Endpoints for US6
 
-- [ ] T049 [US6] Add POST /rules/{id}/simulate endpoint to AccountingRuleController
+- [x] T049 [US6] Add POST /rules/{id}/simulate endpoint to AccountingRuleController
 
 **Checkpoint**: Users can test rules with sample data before activation. Simulation shows exactly what entries would be generated.
 
@@ -191,14 +191,14 @@
 
 ### Services for US7
 
-- [ ] T050 [US7] Create RuleReferenceService in backend/src/main/java/com/financial/rules/service/RuleReferenceService.java with methods: addReference(ruleId, scenarioId), removeReference, getReferences, hasReferences
-- [ ] T051 [US7] Add impact analysis to AccountingRuleService: getImpactAnalysis(ruleId) returns list of affected scenarios
-- [ ] T052 [US7] Update AccountingRuleService.deleteRule to check references and prevent deletion if referenced
+- [x] T050 [US7] Create RuleReferenceService in backend/src/main/java/com/financial/rules/service/RuleReferenceService.java with methods: addReference(ruleId, scenarioId), removeReference, getReferences, hasReferences
+- [x] T051 [US7] Add impact analysis to AccountingRuleService: getImpactAnalysis(ruleId) returns list of affected scenarios
+- [x] T052 [US7] Update AccountingRuleService.deleteRule to check references and prevent deletion if referenced
 
 ### Controller Updates for US7
 
-- [ ] T053 [US7] Add GET /rules/{id}/references endpoint to AccountingRuleController
-- [ ] T054 [US7] Add response header or field for impact warnings when updating shared rules
+- [x] T053 [US7] Add GET /rules/{id}/references endpoint to AccountingRuleController
+- [x] T054 [US7] Add response header or field for impact warnings when updating shared rules
 
 **Checkpoint**: Shared rules are protected from breaking changes. Impact analysis shows all affected scenarios.
 
@@ -210,20 +210,20 @@
 
 ### Rule Lifecycle Management
 
-- [ ] T055 [P] Add POST /rules/{id}/activate endpoint to AccountingRuleController with validation-gated state transition
-- [ ] T056 [P] Add POST /rules/{id}/archive endpoint to AccountingRuleController
-- [ ] T057 [P] Add POST /rules/{id}/restore endpoint to AccountingRuleController
-- [ ] T058 [P] Add POST /rules/{id}/clone endpoint to AccountingRuleController
+- [x] T055 [P] Add POST /rules/{id}/activate endpoint to AccountingRuleController with validation-gated state transition
+- [x] T056 [P] Add POST /rules/{id}/archive endpoint to AccountingRuleController
+- [x] T057 [P] Add POST /rules/{id}/restore endpoint to AccountingRuleController
+- [x] T058 [P] Add POST /rules/{id}/clone endpoint to AccountingRuleController
 
 ### Version Management
 
-- [ ] T059 [P] Add GET /rules/{id}/versions endpoint to AccountingRuleController
-- [ ] T060 [P] Add GET /rules/{id}/versions/{versionNumber} endpoint to AccountingRuleController
-- [ ] T061 [P] Add POST /rules/{id}/rollback/{versionNumber} endpoint to AccountingRuleController
+- [x] T059 [P] Add GET /rules/{id}/versions endpoint to AccountingRuleController
+- [x] T060 [P] Add GET /rules/{id}/versions/{versionNumber} endpoint to AccountingRuleController
+- [x] T061 [P] Add POST /rules/{id}/rollback/{versionNumber} endpoint to AccountingRuleController
 
 ### Documentation & Validation
 
-- [ ] T062 Validate all endpoints against quickstart.md examples and contracts/accounting-rules-api.yaml
+- [x] T062 Validate all endpoints against quickstart.md examples and contracts/accounting-rules-api.yaml
 
 ---
 

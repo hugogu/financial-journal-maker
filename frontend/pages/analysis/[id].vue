@@ -47,17 +47,17 @@
 
       <div class="session-main">
         <div class="chat-section">
-          <ChatInterface 
+          <SessionChatInterface 
             :session-id="sessionId" 
             :status="session.status"
           />
         </div>
         <div class="design-section">
-          <DesignPanel :current-phase="session.currentPhase" />
+          <SessionDesignPanel :current-phase="session.currentPhase" />
         </div>
       </div>
 
-      <ExportDialog 
+      <SessionExportDialog 
         v-if="showExportDialog"
         :session-id="sessionId"
         @close="showExportDialog = false"
@@ -219,6 +219,8 @@ function handleExported() {
 .chat-section {
   min-height: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .design-section {

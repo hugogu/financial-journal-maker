@@ -1,6 +1,18 @@
 <template>
   <div class="chat-interface">
     <div class="messages-container" ref="messagesContainer">
+      <div v-if="messages.length === 0 && !isStreaming" class="empty-state">
+        <div class="welcome-message">
+          <h3>👋 Welcome to AI Analysis Session</h3>
+          <p>Start by describing your business scenario. For example:</p>
+          <ul>
+            <li>"I need to track e-commerce order processing with inventory management"</li>
+            <li>"Help me design accounts for a subscription-based SaaS business"</li>
+            <li>"I'm building a marketplace with buyer and seller transactions"</li>
+          </ul>
+          <p class="hint">The AI will guide you through Product → Scenario → Transaction Type → Accounting design phases.</p>
+        </div>
+      </div>
       <MessageBubble
         v-for="message in messages"
         :key="message.id"
@@ -84,7 +96,9 @@ watch(currentResponse, async () => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #f9fafb;
+  min-height: 400px;
+  background: white;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
 }
 
@@ -95,6 +109,52 @@ watch(currentResponse, async () => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 2rem;
+}
+
+.welcome-message {
+  max-width: 600px;
+  text-align: left;
+}
+
+.welcome-message h3 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+  color: #111827;
+}
+
+.welcome-message p {
+  margin: 0.75rem 0;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.welcome-message ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  color: #6b7280;
+}
+
+.welcome-message li {
+  margin: 0.5rem 0;
+  font-style: italic;
+}
+
+.welcome-message .hint {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #eff6ff;
+  border-left: 3px solid #3b82f6;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #1e40af;
 }
 
 .streaming-indicator {

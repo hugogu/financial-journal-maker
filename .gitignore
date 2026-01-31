@@ -51,3 +51,17 @@ coverage/
 # Compiled files
 *.pyc
 __pycache__/
+
+# Frontend (Nuxt 3)
+frontend/node_modules/
+frontend/.nuxt/
+frontend/.output/
+frontend/dist/
+frontend/.nitro/
+frontend/.cache/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+frontend/package-lock.json
+frontend/yarn.lock
+frontend/pnpm-lock.yaml

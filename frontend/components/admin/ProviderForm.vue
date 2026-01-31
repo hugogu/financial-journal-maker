@@ -109,6 +109,9 @@ function handleSubmit() {
   border-radius: 8px;
   padding: 1.5rem;
   border: 1px solid #e5e7eb;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .provider-form h3 {

@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: Financial Journal Maker - Integration Tests
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/coa_db
+    username: coa_user
+    password: coa_password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    clean-disabled: false
+
+server:
+  port: 0
+
+logging:
+  level:
+    root: WARN
+    com.financial: DEBUG
+    org.springframework.web: DEBUG

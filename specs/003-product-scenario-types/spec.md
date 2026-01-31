@@ -198,6 +198,15 @@ TransactionType (N) ─────── TransactionTypeRule ──────
 4. 产品/场景/类型的业务描述主要用于AI分析和人工理解，不参与业务逻辑判断
 5. 版本历史功能在本期简化实现，仅记录更新时间和更新人
 
+## Clarifications
+
+### Session 2026-01-31
+
+- **Q**: Product/Scenario/TransactionType 是否需要生命周期状态管理？ → **A**: A - 三个实体都需要状态管理（DRAFT → ACTIVE → ARCHIVED），与 AccountingRule 保持一致
+- **Q**: 复制产品/场景时，code 冲突如何处理？ → **A**: A - 自动生成 `-copy-N` 后缀，允许用户提交前修改
+- **Q**: 业务描述字段的格式要求？ → **A**: A - Markdown 格式纯文本（支持基础格式）
+- **Q**: 父级状态变更时，子级状态如何处理？ → **A**: A - 子级状态独立管理，父级 ARCHIVED 时子级不允许新建
+
 ## Out of Scope
 
 - AI 分析会话功能（下一期工作）

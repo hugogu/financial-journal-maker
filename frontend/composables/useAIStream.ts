@@ -25,7 +25,10 @@ export function useAIStream() {
     try {
       const response = await fetch(`${apiBase}/sessions/${sessionId}/messages/stream`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'text/event-stream'
+        },
         body: JSON.stringify({ content }),
       })
 

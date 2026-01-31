@@ -1,32 +1,46 @@
 # Financial Journal Maker Development Guidelines
 
-Auto-generated from all feature plans. **Last updated**: 2026-01-28
+Auto-generated from all feature plans. **Last updated**: 2026-01-31
 
 ## Active Technologies
 
-- Java 21 + Spring Boot 3.x (001-coa-management)
-- PostgreSQL (001-coa-management)
+- Java 21 + Spring Boot 3.x (001-coa-management, 002-accounting-rules)
+- PostgreSQL (001-coa-management, 002-accounting-rules)
+- Expression Parser with strict typing (002-accounting-rules)
+- Numscript DSL Generator (002-accounting-rules)
 
 ## Project Structure
 
 ```text
 backend/
-├── src/main/java/com/financial/coa/
-│   ├── controller/
-│   ├── service/
-│   ├── repository/
-│   ├── domain/
-│   ├── dto/
-│   ├── exception/
-│   └── config/
+├── src/main/java/com/financial/
+│   ├── coa/                        # 001-coa-management
+│   │   ├── controller/
+│   │   ├── service/
+│   │   ├── repository/
+│   │   ├── domain/
+│   │   ├── dto/
+│   │   ├── exception/
+│   │   └── config/
+│   └── rules/                      # 002-accounting-rules
+│       ├── controller/
+│       ├── service/
+│       │   ├── AccountingRuleService.java
+│       │   ├── ExpressionParser.java
+│       │   ├── NumscriptGenerator.java
+│       │   └── RuleSimulationService.java
+│       ├── repository/
+│       ├── domain/
+│       ├── dto/
+│       └── exception/
 ├── src/main/resources/
 │   ├── application.yml
 │   └── db/migration/
-└── src/test/java/com/financial/coa/
-    ├── controller/
-    ├── service/
-    ├── repository/
-    └── integration/
+│       ├── V1__create_coa_tables.sql
+│       └── V2__create_rules_tables.sql
+└── src/test/java/com/financial/
+    ├── coa/
+    └── rules/
 ```
 
 ## Commands
@@ -69,6 +83,10 @@ Java 21: Follow Spring Boot conventions
 
 ## Recent Changes
 
+- 002-accounting-rules: Added Accounting Rules Management module
+- 002-accounting-rules: Added Expression Parser with strict typing
+- 002-accounting-rules: Added Numscript DSL Generator
+- 002-accounting-rules: Added Rule Simulation Engine
 - 001-coa-management: Added Java 21 + Spring Boot 3.x
 - 001-coa-management: Added PostgreSQL database
 - 001-coa-management: Added Chart of Accounts Management API module

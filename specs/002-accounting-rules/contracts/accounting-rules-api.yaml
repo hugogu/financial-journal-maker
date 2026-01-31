@@ -1,0 +1,992 @@
+openapi: 3.0.3
+info:
+  title: Accounting Rules Management API
+  description: |
+    API for managing accounting rules that define how business events translate into journal entries.
+    Rules are framework-agnostic with pluggable output generation (initial: Numscript DSL for Formance Ledger).
+  version: 1.0.0
+  contact:
+    name: Financial Journal Maker
+    
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Rules
+    description: Accounting rule CRUD operations
+  - name: Lifecycle
+    description: Rule lifecycle management (activate, archive, restore)
+  - name: Versions
+    description: Rule version history and rollback
+  - name: Simulation
+    description: Rule simulation and testing
+  - name: Generation
+    description: DSL generation (Numscript)
+  - name: Validation
+    description: Expression and rule validation
+
+paths:
+  /api/v1/rules:
+    post:
+      tags: [Rules]
+      summary: Create a new accounting rule
+      description: Creates a new rule in DRAFT status with entry template and trigger conditions
+      operationId: createRule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleCreateRequest'
+            example:
+              code: "RULE-001"
+              name: "Payment Received Rule"
+              description: "Generates entries when payment is received"
+              sharedAcrossScenarios: false
+              entryTemplate:
+                description: "Standard payment entry"
+                variableSchema:
+                  - name: "transaction.amount"
+                    type: "MONEY"
+                    currency: "USD"
+                lines:
+                  - accountCode: "1110"
+                    entryType: "DEBIT"
+                    amountExpression: "transaction.amount"
+                  - accountCode: "4100"
+                    entryType: "CREDIT"
+                    amountExpression: "transaction.amount"
+              triggerConditions:
+                - conditionJson:
+                    type: "SIMPLE"
+                    field: "event.type"
+                    operator: "EQUALS"
+                    value: "payment_received"
+                  description: "Triggers on payment received events"
+      responses:
+        '201':
+          description: Rule created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+        '400':
+          description: Invalid request (validation errors)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Rule code already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags: [Rules]
+      summary: List accounting rules
+      description: Returns paginated list of rules with optional filtering
+      operationId: listRules
+      parameters:
+        - name: status
+          in: query
+          description: Filter by status
+          schema:
+            type: string
+            enum: [DRAFT, ACTIVE, ARCHIVED]
+        - name: shared
+          in: query
+          description: Filter by shared flag
+          schema:
+            type: boolean
+        - name: search
+          in: query
+          description: Search in code and name
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number (0-indexed)
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          description: Page size
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: sort
+          in: query
+          description: Sort field and direction
+          schema:
+            type: string
+            default: "createdAt,desc"
+      responses:
+        '200':
+          description: List of rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RulePageResponse'
+
+  /api/v1/rules/{id}:
+    get:
+      tags: [Rules]
+      summary: Get rule by ID
+      description: Returns a single rule with full details including entry template and conditions
+      operationId: getRule
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      responses:
+        '200':
+          description: Rule details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags: [Rules]
+      summary: Update rule
+      description: Updates a rule. Requires version for optimistic locking. Only DRAFT rules can be updated.
+      operationId: updateRule
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleUpdateRequest'
+      responses:
+        '200':
+          description: Rule updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Version conflict or rule not in DRAFT status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags: [Rules]
+      summary: Delete rule
+      description: Deletes a rule. Only DRAFT or ARCHIVED rules can be deleted.
+      operationId: deleteRule
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      responses:
+        '204':
+          description: Rule deleted successfully
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Cannot delete ACTIVE rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/rules/{id}/activate:
+    post:
+      tags: [Lifecycle]
+      summary: Activate rule
+      description: Transitions rule from DRAFT to ACTIVE after validation
+      operationId: activateRule
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      responses:
+        '200':
+          description: Rule activated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+        '400':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Rule not in DRAFT status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/rules/{id}/archive:
+    post:
+      tags: [Lifecycle]
+      summary: Archive rule
+      description: Transitions rule to ARCHIVED status
+      operationId: archiveRule
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      responses:
+        '200':
+          description: Rule archived successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/rules/{id}/restore:
+    post:
+      tags: [Lifecycle]
+      summary: Restore archived rule
+      description: Restores ARCHIVED rule to DRAFT status (creates new version)
+      operationId: restoreRule
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      responses:
+        '200':
+          description: Rule restored to DRAFT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Rule not in ARCHIVED status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/rules/{id}/clone:
+    post:
+      tags: [Rules]
+      summary: Clone rule
+      description: Creates a copy of the rule with a new code
+      operationId: cloneRule
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [newCode, newName]
+              properties:
+                newCode:
+                  type: string
+                  pattern: '^[A-Z0-9-]+$'
+                  example: "RULE-002"
+                newName:
+                  type: string
+                  example: "Payment Received Rule (Copy)"
+      responses:
+        '201':
+          description: Rule cloned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+        '400':
+          description: Invalid new code format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Source rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: New code already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/rules/{id}/versions:
+    get:
+      tags: [Versions]
+      summary: List rule versions
+      description: Returns version history for a rule
+      operationId: listRuleVersions
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Version history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionPageResponse'
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/rules/{id}/versions/{versionNumber}:
+    get:
+      tags: [Versions]
+      summary: Get specific version
+      description: Returns the rule state at a specific version
+      operationId: getRuleVersion
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+        - name: versionNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Version details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionResponse'
+        '404':
+          description: Rule or version not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/rules/{id}/rollback/{versionNumber}:
+    post:
+      tags: [Versions]
+      summary: Rollback to version
+      description: Restores rule to a previous version state (creates new version)
+      operationId: rollbackRule
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+        - name: versionNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Rule rolled back
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleResponse'
+        '404':
+          description: Rule or version not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Cannot rollback ACTIVE rule (archive first)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/rules/{id}/simulate:
+    post:
+      tags: [Simulation]
+      summary: Simulate rule execution
+      description: Simulates rule execution with sample event data
+      operationId: simulateRule
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimulationRequest'
+            example:
+              eventData:
+                type: "payment_received"
+                amount: 1000.00
+                currency: "USD"
+      responses:
+        '200':
+          description: Simulation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulationResponse'
+        '400':
+          description: Invalid event data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/rules/{id}/generate:
+    post:
+      tags: [Generation]
+      summary: Generate Numscript DSL
+      description: Generates Formance Ledger Numscript from rule definition
+      operationId: generateNumscript
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      responses:
+        '200':
+          description: Generated Numscript
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerationResponse'
+        '400':
+          description: Generation failed (missing mappings, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/rules/validate-expression:
+    post:
+      tags: [Validation]
+      summary: Validate expression syntax
+      description: Validates an amount expression for syntax errors
+      operationId: validateExpression
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [expression]
+              properties:
+                expression:
+                  type: string
+                  example: "transaction.amount * 0.1"
+                variableSchema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/VariableDefinition'
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionValidationResponse'
+
+components:
+  parameters:
+    RuleId:
+      name: id
+      in: path
+      required: true
+      description: Rule ID
+      schema:
+        type: integer
+        format: int64
+
+  schemas:
+    RuleCreateRequest:
+      type: object
+      required: [code, name, entryTemplate]
+      properties:
+        code:
+          type: string
+          pattern: '^[A-Z0-9-]+$'
+          maxLength: 50
+          description: Unique rule code
+        name:
+          type: string
+          maxLength: 255
+          description: Human-readable name
+        description:
+          type: string
+          description: Detailed description
+        sharedAcrossScenarios:
+          type: boolean
+          default: false
+          description: Whether rule can be reused across scenarios
+        entryTemplate:
+          $ref: '#/components/schemas/EntryTemplateRequest'
+        triggerConditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TriggerConditionRequest'
+
+    RuleUpdateRequest:
+      type: object
+      required: [version]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        sharedAcrossScenarios:
+          type: boolean
+        entryTemplate:
+          $ref: '#/components/schemas/EntryTemplateRequest'
+        triggerConditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TriggerConditionRequest'
+        version:
+          type: integer
+          format: int64
+          description: Current version for optimistic locking
+
+    RuleResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        code:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [DRAFT, ACTIVE, ARCHIVED]
+        sharedAcrossScenarios:
+          type: boolean
+        currentVersion:
+          type: integer
+        version:
+          type: integer
+          format: int64
+        entryTemplate:
+          $ref: '#/components/schemas/EntryTemplateResponse'
+        triggerConditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TriggerConditionResponse'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    RulePageResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleSummaryResponse'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+
+    RuleSummaryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        code:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          enum: [DRAFT, ACTIVE, ARCHIVED]
+        sharedAcrossScenarios:
+          type: boolean
+        entryLineCount:
+          type: integer
+        currentVersion:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    EntryTemplateRequest:
+      type: object
+      required: [lines]
+      properties:
+        description:
+          type: string
+        variableSchema:
+          type: array
+          items:
+            $ref: '#/components/schemas/VariableDefinition'
+        lines:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/EntryLineRequest'
+
+    EntryTemplateResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        variableSchema:
+          type: array
+          items:
+            $ref: '#/components/schemas/VariableDefinition'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntryLineResponse'
+
+    EntryLineRequest:
+      type: object
+      required: [accountCode, entryType, amountExpression]
+      properties:
+        accountCode:
+          type: string
+          maxLength: 50
+          description: Reference to COA account
+        entryType:
+          type: string
+          enum: [DEBIT, CREDIT]
+        amountExpression:
+          type: string
+          maxLength: 500
+          description: Expression for calculating amount
+        memoTemplate:
+          type: string
+          maxLength: 255
+          description: Template for entry memo
+
+    EntryLineResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        sequenceNumber:
+          type: integer
+        accountCode:
+          type: string
+        accountName:
+          type: string
+          description: Resolved from COA
+        entryType:
+          type: string
+          enum: [DEBIT, CREDIT]
+        amountExpression:
+          type: string
+        memoTemplate:
+          type: string
+
+    TriggerConditionRequest:
+      type: object
+      required: [conditionJson]
+      properties:
+        conditionJson:
+          type: object
+          description: JSON structure defining the condition
+        description:
+          type: string
+          maxLength: 255
+
+    TriggerConditionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        conditionJson:
+          type: object
+        description:
+          type: string
+        humanReadable:
+          type: string
+          description: Auto-generated human-readable format
+
+    VariableDefinition:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+          pattern: '^[a-z][a-z0-9_.]*$'
+          description: Variable name (e.g., transaction.amount)
+        type:
+          type: string
+          enum: [DECIMAL, MONEY, BOOLEAN, STRING]
+        currency:
+          type: string
+          description: Required if type is MONEY
+        description:
+          type: string
+
+    VersionPageResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/VersionSummaryResponse'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+
+    VersionSummaryResponse:
+      type: object
+      properties:
+        versionNumber:
+          type: integer
+        changeDescription:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+
+    VersionResponse:
+      type: object
+      properties:
+        versionNumber:
+          type: integer
+        snapshot:
+          $ref: '#/components/schemas/RuleResponse'
+        changeDescription:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+
+    SimulationRequest:
+      type: object
+      required: [eventData]
+      properties:
+        eventData:
+          type: object
+          additionalProperties: true
+          description: Sample event data for simulation
+
+    SimulationResponse:
+      type: object
+      properties:
+        wouldFire:
+          type: boolean
+          description: Whether trigger conditions would match
+        reasonNotFired:
+          type: string
+          description: Explanation if rule would not fire
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimulatedEntry'
+        totalDebits:
+          type: number
+          format: decimal
+        totalCredits:
+          type: number
+          format: decimal
+        isBalanced:
+          type: boolean
+        warnings:
+          type: array
+          items:
+            type: string
+        errors:
+          type: array
+          items:
+            type: string
+
+    SimulatedEntry:
+      type: object
+      properties:
+        accountCode:
+          type: string
+        accountName:
+          type: string
+        entryType:
+          type: string
+          enum: [DEBIT, CREDIT]
+        amount:
+          type: number
+          format: decimal
+        currency:
+          type: string
+        memo:
+          type: string
+
+    GenerationResponse:
+      type: object
+      properties:
+        numscript:
+          type: string
+          description: Generated Numscript DSL
+        validationResult:
+          $ref: '#/components/schemas/ValidationResult'
+
+    ValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
+        warnings:
+          type: array
+          items:
+            type: string
+
+    ExpressionValidationResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        parsedType:
+          type: string
+          enum: [DECIMAL, MONEY, BOOLEAN, STRING]
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpressionError'
+        warnings:
+          type: array
+          items:
+            type: string
+
+    ExpressionError:
+      type: object
+      properties:
+        position:
+          type: integer
+        message:
+          type: string
+        expected:
+          type: string
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        errorCode:
+          type: string
+        validationErrors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+              value:
+                type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        errorCode:
+          type: string
+        path:
+          type: string
+        details:
+          type: object
+          additionalProperties: true

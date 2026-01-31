@@ -206,6 +206,7 @@ TransactionType (N) ─────── TransactionTypeRule ──────
 - **Q**: 复制产品/场景时，code 冲突如何处理？ → **A**: A - 自动生成 `-copy-N` 后缀，允许用户提交前修改
 - **Q**: 业务描述字段的格式要求？ → **A**: A - Markdown 格式纯文本（支持基础格式）
 - **Q**: 父级状态变更时，子级状态如何处理？ → **A**: A - 子级状态独立管理，父级 ARCHIVED 时子级不允许新建
+- **Q**: TransactionType 关联 AccountingRule 时，是否校验规则状态？ → **A**: C - 允许关联 DRAFT 和 ACTIVE，不允许 ARCHIVED
 
 ## Out of Scope
 

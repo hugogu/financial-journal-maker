@@ -1,0 +1,752 @@
+openapi: 3.0.3
+info:
+  title: Transaction Flow Viewer API
+  description: |
+    API for browsing and viewing transaction flow designs, accounting entries, 
+    and Numscript DSL generated from AI analysis sessions.
+    
+    This API is **read-only** and aggregates data from the AI Analysis Session feature.
+  version: 1.0.0
+  contact:
+    name: Financial Journal Maker Team
+
+servers:
+  - url: /api/v1
+    description: API v1
+
+tags:
+  - name: Products
+    description: Product hierarchy browsing
+  - name: Scenarios
+    description: Scenario hierarchy browsing
+  - name: Transaction Flows
+    description: Transaction flow details and visualizations
+  - name: Preview
+    description: Real-time design preview during AI sessions
+
+paths:
+  /transaction-flows/products:
+    get:
+      tags:
+        - Products
+      summary: List all products with transaction flows
+      description: Returns aggregated list of all products that have confirmed transaction flow designs
+      operationId: listProducts
+      parameters:
+        - name: search
+          in: query
+          description: Search by product name or code
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number (0-indexed)
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          description: Page size
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSummaryPage'
+
+  /transaction-flows/products/{productCode}:
+    get:
+      tags:
+        - Products
+      summary: Get product details
+      operationId: getProduct
+      parameters:
+        - name: productCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product details with scenarios
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetail'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /transaction-flows/products/{productCode}/scenarios:
+    get:
+      tags:
+        - Scenarios
+      summary: List scenarios for a product
+      operationId: listScenarios
+      parameters:
+        - name: productCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: Search by scenario name or code
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of scenarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScenarioSummary'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /transaction-flows/scenarios/{scenarioCode}:
+    get:
+      tags:
+        - Scenarios
+      summary: Get scenario details
+      operationId: getScenario
+      parameters:
+        - name: scenarioCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Scenario details with transaction types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioDetail'
+        '404':
+          description: Scenario not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /transaction-flows:
+    get:
+      tags:
+        - Transaction Flows
+      summary: List all transaction flows (flat view)
+      description: Returns all transaction flows across all products and scenarios
+      operationId: listAllTransactionFlows
+      parameters:
+        - name: productCode
+          in: query
+          description: Filter by product code
+          schema:
+            type: string
+        - name: scenarioCode
+          in: query
+          description: Filter by scenario code
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: Search by name or code
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: List of transaction flows
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionFlowSummaryPage'
+
+  /transaction-flows/{transactionTypeCode}:
+    get:
+      tags:
+        - Transaction Flows
+      summary: Get complete transaction flow details
+      description: Returns full transaction flow with accounts, journal entries, and flow diagram data
+      operationId: getTransactionFlow
+      parameters:
+        - name: transactionTypeCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Complete transaction flow view
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionFlowView'
+        '404':
+          description: Transaction flow not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /transaction-flows/{transactionTypeCode}/numscript:
+    get:
+      tags:
+        - Transaction Flows
+      summary: Get Numscript for a transaction flow
+      description: Returns the generated Numscript DSL with validation status
+      operationId: getTransactionNumscript
+      parameters:
+        - name: transactionTypeCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: regenerate
+          in: query
+          description: Force regeneration instead of using cached version
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Numscript view
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NumscriptView'
+        '404':
+          description: Transaction flow not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /transaction-flows/{transactionTypeCode}/diagram:
+    get:
+      tags:
+        - Transaction Flows
+      summary: Get flow diagram data
+      description: Returns structured data for rendering cash/info flow diagram
+      operationId: getFlowDiagram
+      parameters:
+        - name: transactionTypeCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: includeLayout
+          in: query
+          description: Include computed node positions
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: Flow diagram data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowDiagramData'
+        '404':
+          description: Transaction flow not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /transaction-flows/{transactionTypeCode}/timeline:
+    get:
+      tags:
+        - Transaction Flows
+      summary: Get transaction timeline
+      description: Returns timeline data for multi-timing transactions
+      operationId: getTransactionTimeline
+      parameters:
+        - name: transactionTypeCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Timeline data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionTimeline'
+        '404':
+          description: Transaction flow not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}/preview:
+    get:
+      tags:
+        - Preview
+      summary: Get current design preview for active session
+      description: Returns the current state of accounts and entries being designed in an AI session
+      operationId: getSessionPreview
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Design preview state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DesignPreview'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}/preview/stream:
+    get:
+      tags:
+        - Preview
+      summary: Stream design preview updates (SSE)
+      description: Server-Sent Events stream for real-time preview updates during AI conversation
+      operationId: streamSessionPreview
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: SSE stream of preview updates
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: SSE events with DesignPreview JSON data
+
+components:
+  schemas:
+    ProductSummary:
+      type: object
+      required:
+        - productCode
+        - productName
+        - scenarioCount
+        - transactionTypeCount
+      properties:
+        productCode:
+          type: string
+          example: "CONSUMER_LOAN"
+        productName:
+          type: string
+          example: "Consumer Loan Product"
+        description:
+          type: string
+        scenarioCount:
+          type: integer
+          example: 3
+        transactionTypeCount:
+          type: integer
+          example: 12
+        sourceSessionId:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+
+    ProductSummaryPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductSummary'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+
+    ProductDetail:
+      allOf:
+        - $ref: '#/components/schemas/ProductSummary'
+        - type: object
+          properties:
+            scenarios:
+              type: array
+              items:
+                $ref: '#/components/schemas/ScenarioSummary'
+
+    ScenarioSummary:
+      type: object
+      required:
+        - scenarioCode
+        - scenarioName
+        - productCode
+        - transactionTypeCount
+      properties:
+        scenarioCode:
+          type: string
+          example: "DISBURSEMENT"
+        scenarioName:
+          type: string
+          example: "Loan Disbursement"
+        description:
+          type: string
+        productCode:
+          type: string
+        transactionTypeCount:
+          type: integer
+        sourceSessionId:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+
+    ScenarioDetail:
+      allOf:
+        - $ref: '#/components/schemas/ScenarioSummary'
+        - type: object
+          properties:
+            transactionTypes:
+              type: array
+              items:
+                $ref: '#/components/schemas/TransactionFlowSummary'
+
+    TransactionFlowSummary:
+      type: object
+      required:
+        - transactionTypeCode
+        - transactionTypeName
+      properties:
+        transactionTypeCode:
+          type: string
+        transactionTypeName:
+          type: string
+        description:
+          type: string
+        productCode:
+          type: string
+        scenarioCode:
+          type: string
+        accountCount:
+          type: integer
+        entryCount:
+          type: integer
+        hasNumscript:
+          type: boolean
+        sourceSessionId:
+          type: integer
+          format: int64
+
+    TransactionFlowSummaryPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionFlowSummary'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+
+    TransactionFlowView:
+      type: object
+      required:
+        - transactionTypeCode
+        - transactionTypeName
+        - accounts
+        - journalEntries
+      properties:
+        transactionTypeCode:
+          type: string
+        transactionTypeName:
+          type: string
+        description:
+          type: string
+        productCode:
+          type: string
+        scenarioCode:
+          type: string
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountNode'
+        journalEntries:
+          type: array
+          items:
+            $ref: '#/components/schemas/JournalEntryDisplay'
+        flowConnections:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowConnection'
+        numscript:
+          type: string
+        numscriptValid:
+          type: boolean
+        sourceSessionId:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    AccountNode:
+      type: object
+      required:
+        - accountCode
+        - accountName
+        - accountType
+      properties:
+        accountCode:
+          type: string
+          example: "2202-07"
+        accountName:
+          type: string
+          example: "应付客户-冻结"
+        accountType:
+          type: string
+          enum: [CUSTOMER, BANK, CHANNEL, REVENUE, COST, OTHER]
+        accountState:
+          type: string
+          enum: [AVAILABLE, FROZEN, IN_TRANSIT]
+          nullable: true
+        position:
+          $ref: '#/components/schemas/Position'
+        linkedToCoA:
+          type: boolean
+          description: Whether linked to existing Chart of Accounts entry
+
+    Position:
+      type: object
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+
+    JournalEntryDisplay:
+      type: object
+      required:
+        - entryId
+        - operation
+        - accountCode
+        - accountName
+        - amountExpression
+      properties:
+        entryId:
+          type: string
+        operation:
+          type: string
+          enum: [DR, CR]
+        accountCode:
+          type: string
+        accountName:
+          type: string
+        amountExpression:
+          type: string
+          example: "1015$"
+        triggerEvent:
+          type: string
+        triggerEventLabel:
+          type: string
+        condition:
+          type: string
+          nullable: true
+        sequenceNumber:
+          type: integer
+        groupId:
+          type: string
+
+    FlowConnection:
+      type: object
+      required:
+        - connectionId
+        - sourceAccountCode
+        - targetAccountCode
+        - flowType
+      properties:
+        connectionId:
+          type: string
+        sourceAccountCode:
+          type: string
+        targetAccountCode:
+          type: string
+        flowType:
+          type: string
+          enum: [CASH, INFO]
+        amountExpression:
+          type: string
+        label:
+          type: string
+        triggerEvent:
+          type: string
+        condition:
+          type: string
+          nullable: true
+
+    FlowDiagramData:
+      type: object
+      properties:
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountNode'
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowConnection'
+        layoutComputed:
+          type: boolean
+
+    NumscriptView:
+      type: object
+      required:
+        - numscript
+        - isValid
+      properties:
+        numscript:
+          type: string
+        isValid:
+          type: boolean
+        validationErrors:
+          type: array
+          items:
+            type: string
+        generatedAt:
+          type: string
+          format: date-time
+        sourceArtifactId:
+          type: integer
+          format: int64
+
+    TransactionTimeline:
+      type: object
+      properties:
+        transactionTypeCode:
+          type: string
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimelineEvent'
+
+    TimelineEvent:
+      type: object
+      properties:
+        eventCode:
+          type: string
+        eventLabel:
+          type: string
+        timeOffset:
+          type: string
+          example: "T+0"
+        isRealtime:
+          type: boolean
+        journalEntryIds:
+          type: array
+          items:
+            type: string
+
+    DesignPreview:
+      type: object
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+        currentPhase:
+          type: string
+        tentativeAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountNode'
+        confirmedAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountNode'
+        tentativeEntries:
+          type: array
+          items:
+            $ref: '#/components/schemas/JournalEntryDisplay'
+        confirmedEntries:
+          type: array
+          items:
+            $ref: '#/components/schemas/JournalEntryDisplay'
+        previewNumscript:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      required:
+        - timestamp
+        - status
+        - error
+        - message
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+        errorCode:
+          type: string
+        details:
+          type: object
+          additionalProperties: true

@@ -14,13 +14,14 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
-    "@vue-flow/core": "^1.33.6",
     "@vue-flow/background": "^1.3.2",
+    "@vue-flow/core": "^1.33.6",
     "dagre": "^0.8.5",
-    "pinia": "^2.1.7",
-    "primevue": "^3.49.1",
-    "primeicons": "^6.0.1",
     "nuxt": "^3.10.0",
+    "nuxt-primevue": "^3.0.0",
+    "pinia": "^2.1.7",
+    "primeicons": "^6.0.1",
+    "primevue": "^3.49.1",
     "prismjs": "^1.29.0",
     "vue": "^3.4.0"
   },

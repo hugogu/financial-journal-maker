@@ -5,15 +5,17 @@
       <h1>{{ flow.transactionTypeName }}</h1>
       <p>{{ flow.description }}</p>
       
-      <TabView>
-        <TabPanel header="Accounts">
-          <AccountsTable :accounts="flow.accounts || []" :loading="false" />
-        </TabPanel>
-        
-        <TabPanel header="Journal Entries">
-          <JournalEntriesTable :entries="flow.journalEntries || []" :loading="false" />
-        </TabPanel>
-      </TabView>
+      <ClientOnly>
+        <TabView>
+          <TabPanel header="Accounts">
+            <AccountsTable :accounts="flow.accounts || []" :loading="false" />
+          </TabPanel>
+          
+          <TabPanel header="Journal Entries">
+            <JournalEntriesTable :entries="flow.journalEntries || []" :loading="false" />
+          </TabPanel>
+        </TabView>
+      </ClientOnly>
     </div>
   </div>
 </template>

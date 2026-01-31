@@ -72,7 +72,7 @@
 - [x] T024 [US1] Extend useTransactionFlows with products and scenarios API calls in frontend/composables/useTransactionFlows.ts
 - [x] T025 [US1] Create Transaction Flow Browser page with tree + list layout in frontend/pages/flows/index.vue
 - [x] T026 [US1] Add search/filter functionality to Browser page in frontend/pages/flows/index.vue
-- [ ] T027 [US1] Add navigation link to flows in main navigation in frontend/layouts/default.vue or frontend/components/AppNavigation.vue
+- [x] T027 [US1] Add navigation link to flows in main navigation in frontend/layouts/default.vue or frontend/components/AppNavigation.vue
 
 **Checkpoint**: User Story 1 complete - users can browse all transaction flows hierarchically
 

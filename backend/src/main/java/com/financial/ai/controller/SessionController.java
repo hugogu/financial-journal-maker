@@ -104,7 +104,7 @@ public class SessionController {
         return ResponseEntity.ok(conversationService.sendMessage(sessionId, request));
     }
 
-    @PostMapping(value = "/{sessionId}/messages/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/{sessionId}/messages/stream", produces = {MediaType.TEXT_EVENT_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Send message (streaming)", description = "Send a message and receive AI response as SSE stream")
     public Flux<org.springframework.http.codec.ServerSentEvent<String>> sendMessageStream(
             @PathVariable Long sessionId,

@@ -54,16 +54,21 @@ export function useAIStream() {
         buffer = lines.pop() || ''
 
         for (const line of lines) {
-          if (line.startsWith('data:')) {
-            // Handle both "data: " and "data:" formats
-            const data = line.startsWith('data: ') 
-              ? line.slice(6).replace(/\\n/g, '\n')
-              : line.slice(5).replace(/\\n/g, '\n')
-            
-            console.log('SSE chunk received:', data)
-            currentResponse.value += data
-            console.log('Current response length:', currentResponse.value.length)
-          }
+          const dataLines = line
+            .split('\n')
+            .map((entry) => entry.trim())
+            .filter((entry) => entry.startsWith('data:'))
+
+          if (!dataLines.length) continue
+
+          const data = dataLines
+            .map((entry) => (entry.startsWith('data: ') ? entry.slice(6) : entry.slice(5)))
+            .join('\n')
+            .replace(/\n/g, '\n')
+
+          console.log('SSE chunk received:', data)
+          currentResponse.value += data
+          console.log('Current response length:', currentResponse.value.length)
         }
       }
 

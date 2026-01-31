@@ -5,6 +5,7 @@
         <NuxtLink to="/" class="logo">Financial Journal Maker</NuxtLink>
         <div class="nav-links">
           <NuxtLink to="/analysis" class="nav-link">Analysis</NuxtLink>
+          <NuxtLink to="/flows" class="nav-link">Flows</NuxtLink>
           <NuxtLink to="/admin/ai-config" class="nav-link">AI Config</NuxtLink>
           <NuxtLink to="/admin/prompts" class="nav-link">Prompts</NuxtLink>
         </div>

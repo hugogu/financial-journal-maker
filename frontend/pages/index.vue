@@ -29,6 +29,24 @@
           </p>
         </NuxtLink>
 
+        <!-- Transaction Flows -->
+        <NuxtLink
+          to="/flows"
+          class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+        >
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h2 class="ml-4 text-xl font-semibold text-gray-900">Transaction Flows</h2>
+          </div>
+          <p class="text-gray-600">
+            Browse and visualize transaction flow designs from AI sessions
+          </p>
+        </NuxtLink>
+
         <!-- Chart of Accounts -->
         <a
           href="http://localhost:8080/swagger-ui.html"

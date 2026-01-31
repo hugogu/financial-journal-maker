@@ -1,12 +1,10 @@
 <template>
   <div class="journal-entries-table">
-    <DataTable :value="entries" :loading="loading" groupRowsBy="triggerEvent">
-      <Column field="triggerEvent" header="Trigger Event" />
+    <DataTable :value="entries" :loading="loading" class="p-datatable-sm">
+      <Column field="triggerEvent" header="Trigger Event" sortable />
       <Column field="operation" header="DR/CR">
         <template #body="slotProps">
-          <Tag :severity="slotProps.data.operation === 'DR' ? 'danger' : 'success'">
-            {{ slotProps.data.operation }}
-          </Tag>
+          <Tag :value="slotProps.data.operation" :severity="slotProps.data.operation === 'DR' ? 'danger' : 'success'" />
         </template>
       </Column>
       <Column field="accountCode" header="Account Code" />

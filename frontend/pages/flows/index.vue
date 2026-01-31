@@ -2,15 +2,19 @@
   <div class="flows-browser">
     <h1>Transaction Flow Browser</h1>
     
-    <div class="search-bar">
-      <InputText v-model="searchQuery" placeholder="Search flows..." @input="handleSearch" />
+    <div class="search-bar mb-4">
+      <ClientOnly>
+        <InputText v-model="searchQuery" placeholder="Search flows..." @input="handleSearch" />
+      </ClientOnly>
     </div>
 
-    <TransactionFlowList 
-      :flows="flows" 
-      :loading="loading"
-      @view="viewFlow"
-    />
+    <ClientOnly>
+      <TransactionFlowList 
+        :flows="flows" 
+        :loading="loading"
+        @view="viewFlow"
+      />
+    </ClientOnly>
   </div>
 </template>
 

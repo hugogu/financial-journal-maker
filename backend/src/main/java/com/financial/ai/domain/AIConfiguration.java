@@ -18,7 +18,7 @@ public class AIConfiguration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "provider_name", nullable = false, unique = true, length = 50)
+    @Column(name = "provider_name", nullable = false, length = 50)
     private String providerName;
 
     @Column(name = "display_name", nullable = false, length = 100)

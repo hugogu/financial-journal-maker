@@ -449,6 +449,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(
+            org.springframework.web.servlet.resource.NoResourceFoundException ex, HttpServletRequest request) {
+        // Don't log static resource 404s as errors - they're expected (favicon, etc.)
+        log.debug("Static resource not found: {}", request.getRequestURI());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message("Resource not found")
+                .path(request.getRequestURI())
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
     @ExceptionHandler(RulesException.class)
     public ResponseEntity<ErrorResponse> handleRulesException(
             RulesException ex, HttpServletRequest request) {

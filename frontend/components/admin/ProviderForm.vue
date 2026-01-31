@@ -33,6 +33,8 @@
           type="password"
           placeholder="Enter API key"
           :required="!isEdit"
+          autocomplete="off"
+          data-1p-ignore
         />
         <small v-if="isEdit">Leave empty to keep existing key</small>
       </div>

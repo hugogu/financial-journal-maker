@@ -1,6 +1,6 @@
 spring:
   application:
-    name: coa-management
+    name: financial-journal-maker
   
   web:
     resources:
@@ -78,6 +78,7 @@ logging:
   level:
     root: INFO
     com.financial.coa: ${LOG_LEVEL:DEBUG}
+    com.financial.rules: ${LOG_LEVEL:DEBUG}
     org.hibernate.SQL: ${SQL_LOG_LEVEL:DEBUG}
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.web: INFO

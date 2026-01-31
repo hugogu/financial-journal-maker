@@ -34,7 +34,7 @@ chmod +x start-local.sh
 
 **访问地址：**
 - 应用: http://localhost:8080
-- API 文档: http://localhost:8080/swagger-ui.html
+- API 文档: http://localhost:8080/swagger-ui/index.html
 - 健康检查: http://localhost:8080/actuator/health
 
 ### 方式 2: Docker 完整启动
@@ -57,7 +57,7 @@ chmod +x start-docker.sh
 
 **访问地址：**
 - 应用: http://localhost:8080
-- API 文档: http://localhost:8080/swagger-ui.html
+- API 文档: http://localhost:8080/swagger-ui/index.html
 - 健康检查: http://localhost:8080/actuator/health
 - PostgreSQL: localhost:5432
 

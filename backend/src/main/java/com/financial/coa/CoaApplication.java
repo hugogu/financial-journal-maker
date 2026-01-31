@@ -2,19 +2,23 @@ package com.financial.coa;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
- * Main application class for Chart of Accounts Management API.
+ * Main application class for Financial Journal Maker.
  * 
  * This application provides RESTful APIs for:
- * - Creating and managing hierarchical chart of accounts structures
+ * - Chart of Accounts (COA) Management: Creating and managing hierarchical account structures
+ * - Accounting Rules Management: Defining and managing accounting rules with trigger conditions
  * - Mapping accounts to Formance Ledger
  * - Importing accounts from Excel/CSV files
  * - Tracking account references and enforcing immutability
+ * - Numscript generation and rule simulation
  */
 @SpringBootApplication
 @EnableJpaAuditing
+@ComponentScan(basePackages = "com.financial")
 public class CoaApplication {
 
     public static void main(String[] args) {

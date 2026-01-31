@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Chart of Accounts Management
+    name: Financial Journal Maker
   
   datasource:
     url: jdbc:postgresql://localhost:5432/coa_db
@@ -46,7 +46,8 @@ server:
 logging:
   level:
     root: INFO
-    com.financial: DEBUG
+    com.financial.coa: DEBUG
+    com.financial.rules: DEBUG
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE

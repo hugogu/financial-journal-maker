@@ -15,6 +15,18 @@ While the initial implementation supports Formance Ledger's Numscript DSL as an 
 
 ---
 
+## Clarifications
+
+### Session 2026-01-31
+
+- **Q**: What are the allowed state transitions for rule lifecycle? → **A**: Validation-gated: draft → active requires validation pass; archived can be restored to draft
+- **Q**: How many historical versions should be retained per rule? → **A**: Unlimited versions retained, no automatic purge (manual cleanup only)
+- **Q**: What data types should the expression language support? → **A**: Strict types with schema-defined variables and static type checking
+- **Q**: When optimistic locking detects a conflict, what should the system do? → **A**: Reject with error (standard optimistic locking with version field)
+- **Q**: What permission model should control access to rule operations? → **A**: No permissions (all authenticated users have full access, rely on audit logs)
+
+---
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Create and Manage Accounting Rules (Priority: P1)
@@ -168,17 +180,17 @@ As a financial controller, I want to mark rules as reusable across multiple prod
 ### Functional Requirements
 
 #### Rule Management
-- **FR-001**: System MUST allow creating accounting rules with name, description, status (draft/active/archived), and version.
-- **FR-002**: System MUST support updating rules with optimistic locking to prevent concurrent modification conflicts.
+- **FR-001**: System MUST allow creating accounting rules with name, description, status (draft/active/archived), and version. Status transitions: draft → active requires validation pass; active ↔ archived bidirectional; archived can be restored to draft.
+- **FR-002**: System MUST support updating rules with optimistic locking to prevent concurrent modification conflicts. On version mismatch, reject update with error requiring manual refresh.
 - **FR-003**: System MUST prevent deletion of rules that are referenced by active scenarios.
-- **FR-004**: System MUST maintain version history for rules, allowing rollback to previous versions.
+- **FR-004**: System MUST maintain unlimited version history for rules (no automatic purge), allowing rollback to any previous version.
 - **FR-005**: System MUST support cloning rules to create independent copies.
 
 #### Entry Templates
 - **FR-006**: System MUST allow defining entry templates with multiple entry lines (debit and credit).
 - **FR-007**: Each entry line MUST specify: account reference (from COA), entry type (debit/credit), amount expression, and optional memo.
 - **FR-008**: System MUST validate that account references exist in the Chart of Accounts.
-- **FR-009**: System MUST support amount expressions using variables, arithmetic operators (+, -, *, /), and parentheses.
+- **FR-009**: System MUST support amount expressions using strictly-typed variables (schema-defined), arithmetic operators (+, -, *, /), and parentheses.
 - **FR-010**: System MUST validate expression syntax and warn about undefined variables.
 - **FR-011**: System SHOULD warn (not error) when debit and credit expressions don't obviously balance.
 
@@ -257,6 +269,7 @@ As a financial controller, I want to mark rules as reusable across multiple prod
 3. Numscript is the only required output format for initial release; other formats are future enhancements.
 4. Rule versioning stores complete snapshots (not diffs) for simplicity.
 5. Trigger conditions are evaluated at runtime by the consuming system; this module only defines and validates them.
+6. All authenticated users have full access to rule operations; audit logs track changes for accountability.
 
 ---
 

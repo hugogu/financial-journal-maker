@@ -2,8 +2,10 @@ package com.financial.coa;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * Main application class for Financial Journal Maker.
@@ -18,6 +20,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
  */
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableJpaRepositories(basePackages = "com.financial")
+@EntityScan(basePackages = "com.financial")
 @ComponentScan(basePackages = "com.financial")
 public class CoaApplication {
 

@@ -27,12 +27,21 @@ public interface AccountingRuleRepository extends JpaRepository<AccountingRule, 
 
     Page<AccountingRule> findBySharedAcrossScenarios(Boolean shared, Pageable pageable);
 
-    @Query("SELECT r FROM AccountingRule r WHERE " +
-           "(:status IS NULL OR r.status = :status) AND " +
-           "(:shared IS NULL OR r.sharedAcrossScenarios = :shared) AND " +
-           "(:search IS NULL OR LOWER(r.code) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(r.name) LIKE LOWER(CONCAT('%', :search, '%')))")
+    @Query(value = "SELECT * FROM accounting_rules r WHERE " +
+           "(:status IS NULL OR r.status = CAST(:status AS VARCHAR)) AND " +
+           "(:shared IS NULL OR r.shared_across_scenarios = :shared) AND " +
+           "(:search IS NULL OR " +
+           "LOWER(r.code) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(r.name) LIKE LOWER(CONCAT('%', :search, '%')))",
+           countQuery = "SELECT COUNT(*) FROM accounting_rules r WHERE " +
+           "(:status IS NULL OR r.status = CAST(:status AS VARCHAR)) AND " +
+           "(:shared IS NULL OR r.shared_across_scenarios = :shared) AND " +
+           "(:search IS NULL OR " +
+           "LOWER(r.code) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(r.name) LIKE LOWER(CONCAT('%', :search, '%')))",
+           nativeQuery = true)
     Page<AccountingRule> findByFilters(
-            @Param("status") RuleStatus status,
+            @Param("status") String status,
             @Param("shared") Boolean shared,
             @Param("search") String search,
             Pageable pageable);

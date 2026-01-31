@@ -141,7 +141,8 @@ public class AccountingRuleService {
 
     @Transactional(readOnly = true)
     public Page<RuleSummaryResponse> listRules(RuleStatus status, Boolean shared, String search, Pageable pageable) {
-        Page<AccountingRule> rules = ruleRepository.findByFilters(status, shared, search, pageable);
+        String statusStr = status != null ? status.name() : null;
+        Page<AccountingRule> rules = ruleRepository.findByFilters(statusStr, shared, search, pageable);
         return rules.map(RuleSummaryResponse::fromEntity);
     }
 

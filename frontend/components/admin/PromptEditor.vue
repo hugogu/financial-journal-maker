@@ -57,12 +57,12 @@ Available variables:
       <div class="variables-help">
         <h4>Available Variables</h4>
         <ul>
-          <li><code>{{ '{{userMessage}}' }}</code> - The user's message</li>
-          <li><code>{{ '{{confirmedDecisions}}' }}</code> - Previously confirmed decisions</li>
-          <li><code>{{ '{{existingProducts}}' }}</code> - Products in the system</li>
-          <li><code>{{ '{{existingScenarios}}' }}</code> - Scenarios in the system</li>
-          <li><code>{{ '{{existingTransactionTypes}}' }}</code> - Transaction types</li>
-          <li><code>{{ '{{chartOfAccounts}}' }}</code> - Available accounts</li>
+          <li><code v-pre>{{userMessage}}</code> - The user's message</li>
+          <li><code v-pre>{{confirmedDecisions}}</code> - Previously confirmed decisions</li>
+          <li><code v-pre>{{existingProducts}}</code> - Products in the system</li>
+          <li><code v-pre>{{existingScenarios}}</code> - Scenarios in the system</li>
+          <li><code v-pre>{{existingTransactionTypes}}</code> - Transaction types in the system</li>
+          <li><code v-pre>{{chartOfAccounts}}</code> - Available accounts</li>
         </ul>
       </div>
 

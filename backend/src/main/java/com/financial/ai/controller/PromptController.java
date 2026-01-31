@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/prompts")
+@RequestMapping("/api/v1/admin/prompts")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Prompt Templates", description = "Admin endpoints for managing AI prompt templates")

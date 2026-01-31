@@ -115,6 +115,60 @@ export const useTransactionFlows = () => {
     }
   };
 
+  /**
+   * T040: Get Numscript code for a transaction type
+   */
+  const getNumscript = async (transactionTypeCode: string) => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const response = await fetch(`${API_BASE}/${transactionTypeCode}/numscript`);
+      if (!response.ok) throw new Error('Failed to fetch numscript');
+      return await response.json();
+    } catch (e: any) {
+      error.value = e.message;
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  /**
+   * T063: Get flow diagram data for visualization
+   */
+  const getFlowDiagram = async (transactionTypeCode: string) => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const response = await fetch(`${API_BASE}/${transactionTypeCode}/diagram`);
+      if (!response.ok) throw new Error('Failed to fetch flow diagram');
+      return await response.json();
+    } catch (e: any) {
+      error.value = e.message;
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  /**
+   * T071: Get timeline for a transaction type
+   */
+  const getTimeline = async (transactionTypeCode: string) => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const response = await fetch(`${API_BASE}/${transactionTypeCode}/timeline`);
+      if (!response.ok) throw new Error('Failed to fetch timeline');
+      return await response.json();
+    } catch (e: any) {
+      error.value = e.message;
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     error,
@@ -123,5 +177,8 @@ export const useTransactionFlows = () => {
     listScenarios,
     listTransactionFlows,
     getTransactionFlow,
+    getNumscript,
+    getFlowDiagram,
+    getTimeline,
   };
 };

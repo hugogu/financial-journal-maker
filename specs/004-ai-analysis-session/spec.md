@@ -5,6 +5,16 @@
 **Status**: Draft  
 **Input**: User description: "AI 分析会话模块 - 用户通过对话方式描述业务场景，AI 逐步引导完成会计流程设计"
 
+## Clarifications
+
+### Session 2026-01-31
+
+- Q: How should user authorization work between Analyst and Admin roles? → A: Deferred to v2 (no auth in v1 per constitution exclusion)
+- Q: How long should session data be retained? → A: Indefinite (never auto-delete, manual cleanup only)
+- Q: Can an analyst work on multiple sessions at the same time? → A: Multiple allowed, limit 5 concurrent active sessions
+- Q: How should the system handle LLM provider failures? → A: Manual switch (admin must change active provider when issues occur)
+- Q: How should export conflicts be resolved? → A: Force overwrite (warn but allow overwriting existing data)
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Analyst Creates and Conducts AI Analysis Session (Priority: P1)
@@ -120,7 +130,7 @@ During analysis, AI automatically retrieves and incorporates existing Products, 
 - How does system handle very long conversations exceeding context limits?
   - System summarizes older context while preserving confirmed design decisions
 - What happens when exported design conflicts with existing system data?
-  - Export shows conflicts and allows analyst to resolve before final import
+  - System warns about conflicts but allows force overwrite of existing data
 
 ## Requirements *(mandatory)*
 
@@ -131,6 +141,8 @@ During analysis, AI automatically retrieves and incorporates existing Products, 
 - **FR-002**: System MUST auto-save session content at configurable intervals (default: 30 seconds)
 - **FR-003**: System MUST preserve full conversation history and design state when pausing/resuming
 - **FR-004**: System MUST prevent editing of COMPLETED sessions (read-only access)
+- **FR-024**: System MUST retain session data indefinitely (manual cleanup only, no auto-deletion)
+- **FR-025**: System MUST limit each analyst to maximum 5 concurrent active sessions
 
 **AI Conversation**
 - **FR-005**: System MUST support streaming AI responses to display output progressively
@@ -148,6 +160,7 @@ During analysis, AI automatically retrieves and incorporates existing Products, 
 - **FR-013**: System MUST query existing Products, Scenarios, TransactionTypes during analysis
 - **FR-014**: System MUST allow AI to reference and suggest linking to existing system data
 - **FR-015**: System MUST support exporting completed designs as COA entries, accounting rules, and Numscript
+- **FR-027**: System MUST warn about conflicts during export but allow force overwrite of existing system data
 
 **Administration**
 - **FR-016**: System MUST support configuring multiple LLM providers (API endpoints and keys)
@@ -155,6 +168,10 @@ During analysis, AI automatically retrieves and incorporates existing Products, 
 - **FR-018**: System MUST allow administrators to select active LLM model
 - **FR-019**: System MUST support custom prompt templates for each design phase
 - **FR-020**: System MUST maintain prompt version history with rollback capability
+- **FR-026**: System MUST require manual admin intervention to switch LLM providers on failure (no auto-failover)
+
+**Authorization** *(deferred to v2)*
+- Authorization and role-based access control are excluded from v1 scope per project constitution
 
 **UI Requirements**
 - **FR-021**: System MUST provide analyst-facing analysis page with conversation interface

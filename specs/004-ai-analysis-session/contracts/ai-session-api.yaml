@@ -1,0 +1,830 @@
+openapi: 3.0.3
+info:
+  title: AI Analysis Session API
+  description: API for AI-powered accounting design sessions
+  version: 1.0.0
+  contact:
+    name: Financial Journal Maker
+
+servers:
+  - url: /api/v1
+    description: API v1
+
+tags:
+  - name: Sessions
+    description: Analysis session management
+  - name: Messages
+    description: Session conversation
+  - name: Export
+    description: Design export operations
+  - name: AI Configuration
+    description: LLM provider configuration (Admin)
+  - name: Prompts
+    description: Prompt template management (Admin)
+
+paths:
+  /sessions:
+    get:
+      tags: [Sessions]
+      summary: List sessions
+      description: Get paginated list of analysis sessions with optional status filter
+      operationId: listSessions
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/SessionStatus'
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionListResponse'
+
+    post:
+      tags: [Sessions]
+      summary: Create session
+      description: Create a new analysis session
+      operationId: createSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionCreateRequest'
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '409':
+          description: Max concurrent sessions reached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}:
+    get:
+      tags: [Sessions]
+      summary: Get session
+      description: Get session details including current design state
+      operationId: getSession
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDetailResponse'
+        '404':
+          description: Session not found
+
+    patch:
+      tags: [Sessions]
+      summary: Update session
+      description: Update session title or other metadata
+      operationId: updateSession
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionUpdateRequest'
+      responses:
+        '200':
+          description: Session updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+
+  /sessions/{sessionId}/pause:
+    post:
+      tags: [Sessions]
+      summary: Pause session
+      description: Pause an active session to resume later
+      operationId: pauseSession
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Session paused
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          description: Invalid state transition
+
+  /sessions/{sessionId}/resume:
+    post:
+      tags: [Sessions]
+      summary: Resume session
+      description: Resume a paused session
+      operationId: resumeSession
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Session resumed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          description: Invalid state transition
+
+  /sessions/{sessionId}/complete:
+    post:
+      tags: [Sessions]
+      summary: Complete session
+      description: Mark session as completed (becomes read-only)
+      operationId: completeSession
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Session completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          description: Invalid state transition or incomplete design
+
+  /sessions/{sessionId}/archive:
+    post:
+      tags: [Sessions]
+      summary: Archive session
+      description: Archive a completed session
+      operationId: archiveSession
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Session archived
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+
+  /sessions/{sessionId}/messages:
+    get:
+      tags: [Messages]
+      summary: Get messages
+      description: Get conversation history for a session
+      operationId: getMessages
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageResponse'
+
+    post:
+      tags: [Messages]
+      summary: Send message
+      description: Send a message and get AI response (non-streaming)
+      operationId: sendMessage
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+      responses:
+        '200':
+          description: AI response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          description: Session not active
+
+  /sessions/{sessionId}/messages/stream:
+    post:
+      tags: [Messages]
+      summary: Send message (streaming)
+      description: Send a message and receive AI response as SSE stream
+      operationId: sendMessageStream
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+      responses:
+        '200':
+          description: Streaming AI response
+          content:
+            text/event-stream:
+              schema:
+                type: string
+
+  /sessions/{sessionId}/decisions:
+    get:
+      tags: [Sessions]
+      summary: Get decisions
+      description: Get all design decisions for a session
+      operationId: getDecisions
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+        - name: confirmed
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DecisionResponse'
+
+    post:
+      tags: [Sessions]
+      summary: Confirm decision
+      description: Confirm or update a design decision
+      operationId: confirmDecision
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecisionRequest'
+      responses:
+        '200':
+          description: Decision confirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecisionResponse'
+
+  /sessions/{sessionId}/export/{type}:
+    post:
+      tags: [Export]
+      summary: Export design
+      description: Export completed design as COA, rules, or Numscript
+      operationId: exportDesign
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+        - name: type
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ExportType'
+        - name: forceOverwrite
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Export successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '409':
+          description: Conflicts detected (use forceOverwrite=true to override)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportConflictResponse'
+
+  /ai-config:
+    get:
+      tags: [AI Configuration]
+      summary: List AI configurations
+      description: Get all configured LLM providers
+      operationId: listAIConfigs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AIConfigResponse'
+
+    post:
+      tags: [AI Configuration]
+      summary: Add AI configuration
+      description: Add a new LLM provider configuration
+      operationId: createAIConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIConfigRequest'
+      responses:
+        '201':
+          description: Configuration created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIConfigResponse'
+
+  /ai-config/{configId}:
+    put:
+      tags: [AI Configuration]
+      summary: Update AI configuration
+      operationId: updateAIConfig
+      parameters:
+        - name: configId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIConfigRequest'
+      responses:
+        '200':
+          description: Configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIConfigResponse'
+
+    delete:
+      tags: [AI Configuration]
+      summary: Delete AI configuration
+      operationId: deleteAIConfig
+      parameters:
+        - name: configId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Configuration deleted
+
+  /ai-config/{configId}/activate:
+    post:
+      tags: [AI Configuration]
+      summary: Activate provider
+      description: Set this provider as the active LLM provider
+      operationId: activateAIConfig
+      parameters:
+        - name: configId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Provider activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIConfigResponse'
+
+  /ai-config/test:
+    post:
+      tags: [AI Configuration]
+      summary: Test configuration
+      description: Validate API key and connectivity
+      operationId: testAIConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIConfigRequest'
+      responses:
+        '200':
+          description: Configuration valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIConfigTestResponse'
+        '400':
+          description: Configuration invalid
+
+  /prompts:
+    get:
+      tags: [Prompts]
+      summary: List prompt templates
+      description: Get all prompt templates grouped by design phase
+      operationId: listPrompts
+      parameters:
+        - name: designPhase
+          in: query
+          schema:
+            $ref: '#/components/schemas/DesignPhase'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PromptResponse'
+
+    post:
+      tags: [Prompts]
+      summary: Create prompt template
+      operationId: createPrompt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptRequest'
+      responses:
+        '201':
+          description: Prompt created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResponse'
+
+  /prompts/{promptId}:
+    put:
+      tags: [Prompts]
+      summary: Update prompt template
+      description: Creates a new version of the prompt
+      operationId: updatePrompt
+      parameters:
+        - name: promptId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptRequest'
+      responses:
+        '200':
+          description: Prompt updated (new version created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResponse'
+
+  /prompts/{promptId}/versions:
+    get:
+      tags: [Prompts]
+      summary: Get prompt versions
+      description: Get version history for a prompt template
+      operationId: getPromptVersions
+      parameters:
+        - name: promptId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PromptResponse'
+
+  /prompts/{promptId}/activate:
+    post:
+      tags: [Prompts]
+      summary: Activate prompt version
+      description: Set this prompt version as active
+      operationId: activatePrompt
+      parameters:
+        - name: promptId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Prompt activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResponse'
+
+components:
+  parameters:
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+  schemas:
+    SessionStatus:
+      type: string
+      enum: [DRAFT, ACTIVE, PAUSED, COMPLETED, ARCHIVED]
+
+    DesignPhase:
+      type: string
+      enum: [PRODUCT, SCENARIO, TRANSACTION_TYPE, ACCOUNTING, SYSTEM]
+
+    ExportType:
+      type: string
+      enum: [coa, rules, numscript]
+
+    SessionCreateRequest:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          maxLength: 200
+
+    SessionUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 200
+
+    SessionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        status:
+          $ref: '#/components/schemas/SessionStatus'
+        currentPhase:
+          $ref: '#/components/schemas/DesignPhase'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SessionDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/SessionResponse'
+        - type: object
+          properties:
+            messageCount:
+              type: integer
+            confirmedDecisions:
+              type: array
+              items:
+                $ref: '#/components/schemas/DecisionResponse'
+
+    SessionListResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionResponse'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+
+    MessageRequest:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+
+    MessageResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        role:
+          type: string
+          enum: [USER, ASSISTANT, SYSTEM]
+        content:
+          type: string
+        metadata:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+
+    DecisionRequest:
+      type: object
+      required: [decisionType, content]
+      properties:
+        decisionType:
+          $ref: '#/components/schemas/DesignPhase'
+        entityType:
+          type: string
+        content:
+          type: object
+        isConfirmed:
+          type: boolean
+          default: true
+        linkedEntityId:
+          type: integer
+          format: int64
+
+    DecisionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        decisionType:
+          $ref: '#/components/schemas/DesignPhase'
+        entityType:
+          type: string
+        content:
+          type: object
+        isConfirmed:
+          type: boolean
+        linkedEntityId:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+
+    ExportResponse:
+      type: object
+      properties:
+        artifactType:
+          $ref: '#/components/schemas/ExportType'
+        content:
+          type: string
+        entityCount:
+          type: integer
+        warnings:
+          type: array
+          items:
+            type: string
+
+    ExportConflictResponse:
+      type: object
+      properties:
+        conflicts:
+          type: array
+          items:
+            type: object
+            properties:
+              entityType:
+                type: string
+              code:
+                type: string
+              existingId:
+                type: integer
+                format: int64
+              message:
+                type: string
+
+    AIConfigRequest:
+      type: object
+      required: [providerName, endpoint, modelName, apiKey]
+      properties:
+        providerName:
+          type: string
+        displayName:
+          type: string
+        endpoint:
+          type: string
+          format: uri
+        modelName:
+          type: string
+        apiKey:
+          type: string
+          format: password
+
+    AIConfigResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        providerName:
+          type: string
+        displayName:
+          type: string
+        endpoint:
+          type: string
+        modelName:
+          type: string
+        isActive:
+          type: boolean
+        priority:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    AIConfigTestResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        message:
+          type: string
+        latencyMs:
+          type: integer
+
+    PromptRequest:
+      type: object
+      required: [name, designPhase, content]
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        designPhase:
+          $ref: '#/components/schemas/DesignPhase'
+        content:
+          type: string
+
+    PromptResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        designPhase:
+          $ref: '#/components/schemas/DesignPhase'
+        content:
+          type: string
+        version:
+          type: integer
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string

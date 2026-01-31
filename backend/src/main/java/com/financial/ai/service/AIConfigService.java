@@ -90,7 +90,8 @@ public class AIConfigService {
         if (request.getModelName() != null) {
             config.setModelName(request.getModelName());
         }
-        if (request.getApiKey() != null) {
+        // Only update API key if provided and not empty
+        if (request.getApiKey() != null && !request.getApiKey().trim().isEmpty()) {
             config.setApiKey(encryptApiKey(request.getApiKey()));
         }
         if (request.getEndpoint() != null) {

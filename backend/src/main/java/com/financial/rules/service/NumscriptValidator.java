@@ -67,7 +67,6 @@ public class NumscriptValidator {
     }
 
     private void validateStructure(String numscript, ValidationResult result) {
-        boolean hasVars = VARS_BLOCK.matcher(numscript).find();
         boolean hasSend = SEND_BLOCK.matcher(numscript).find();
 
         if (!hasSend) {

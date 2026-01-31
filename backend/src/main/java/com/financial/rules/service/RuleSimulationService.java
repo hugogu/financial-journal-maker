@@ -68,8 +68,6 @@ public class RuleSimulationService {
             return entries;
         }
 
-        List<VariableDefinition> schema = parseVariableSchema(template.getVariableSchemaJson());
-
         for (EntryLine line : template.getLines()) {
             BigDecimal amount = evaluateExpression(line.getAmountExpression(), eventData);
             String memo = resolveMemoTemplate(line.getMemoTemplate(), eventData);

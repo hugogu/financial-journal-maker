@@ -41,9 +41,11 @@ public class Account {
     @JoinColumn(name = "parent_id", foreignKey = @ForeignKey(name = "fk_account_parent"))
     private Account parent;
     
+    @Builder.Default
     @Column(name = "shared_across_scenarios", nullable = false)
     private Boolean sharedAcrossScenarios = false;
     
+    @Builder.Default
     @Version
     @Column(name = "version", nullable = false)
     private Long version = 0L;

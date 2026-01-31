@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -133,9 +132,8 @@ public class NumscriptGenerator {
         for (int i = 0; i < debits.size(); i++) {
             EntryLine debit = debits.get(i);
             String amount = translateExpression(debit.getAmountExpression());
-            String currency = "USD";
             
-            sb.append(String.format("  %s %s\n", currency, amount));
+            sb.append(String.format("  %s %s\n", "USD", amount));
         }
         
         sb.append("] (\n");

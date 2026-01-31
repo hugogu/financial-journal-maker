@@ -64,7 +64,9 @@ public class AIConversationService {
         String systemPrompt = buildSystemPrompt(session);
         String conversationContext = buildConversationContext(sessionId);
 
+        log.debug("STREAMING - Getting ChatClient for session {}", sessionId);
         ChatClient chatClient = llmClientProvider.getChatClientOrThrow();
+        log.debug("STREAMING - ChatClient obtained, starting stream");
 
         StringBuilder fullResponse = new StringBuilder();
 
@@ -73,13 +75,16 @@ public class AIConversationService {
                 .user(conversationContext + "\n\nUser: " + request.getContent())
                 .stream()
                 .content()
-                .doOnNext(fullResponse::append)
+                .doOnNext(chunk -> {
+                    fullResponse.append(chunk);
+                    log.trace("STREAMING - Received chunk: {}", chunk.length() > 50 ? chunk.substring(0, 50) + "..." : chunk);
+                })
                 .doOnComplete(() -> {
                     saveAssistantMessage(sessionId, fullResponse.toString());
-                    log.info("Completed streaming response for session {}", sessionId);
+                    log.info("STREAMING - Completed streaming response for session {}", sessionId);
                 })
                 .doOnError(error -> {
-                    log.error("Error streaming response for session {}: {}", sessionId, error.getMessage());
+                    log.error("STREAMING - Error streaming response for session {}: {}", sessionId, error.getMessage(), error);
                 });
     }
 

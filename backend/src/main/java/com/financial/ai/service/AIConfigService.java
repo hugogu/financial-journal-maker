@@ -141,13 +141,32 @@ public class AIConfigService {
 
         try {
             String decryptedKey = decryptApiKey(config.getApiKey());
+            
+            // Log API key presence for debugging
+            log.info("Testing configuration {} - Provider: {}, Model: {}, Endpoint: {}, API Key present: {}, API Key length: {}", 
+                    configId, config.getProviderName(), config.getModelName(), config.getEndpoint(),
+                    decryptedKey != null && !decryptedKey.isEmpty(), 
+                    decryptedKey != null ? decryptedKey.length() : 0);
+            
+            if (decryptedKey == null || decryptedKey.trim().isEmpty()) {
+                log.error("API key is null or empty for configuration {}", configId);
+                throw new IllegalStateException("API key is not configured");
+            }
+            
+            // Log full details for debugging
+            log.debug("TEST REQUEST - Endpoint: {}, Model: {}, API Key (first 10 chars): {}", 
+                    config.getEndpoint(), config.getModelName(), 
+                    decryptedKey.substring(0, Math.min(10, decryptedKey.length())));
+            
             OpenAiApi api = new OpenAiApi(config.getEndpoint(), decryptedKey);
             OpenAiChatOptions options = OpenAiChatOptions.builder()
                     .withModel(config.getModelName())
                     .build();
             OpenAiChatModel chatModel = new OpenAiChatModel(api, options);
 
+            log.debug("TEST REQUEST - Calling chatModel.call()");
             String response = chatModel.call("Hello, respond with 'OK' if you can read this.");
+            log.debug("TEST REQUEST - Response received: {}", response != null ? response.substring(0, Math.min(50, response.length())) : "null");
 
             boolean success = response != null && !response.isEmpty();
             return AIConfigTestResponse.builder()

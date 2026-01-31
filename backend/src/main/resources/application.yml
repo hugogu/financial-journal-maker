@@ -85,9 +85,15 @@ logging:
     root: INFO
     com.financial.coa: ${LOG_LEVEL:DEBUG}
     com.financial.rules: ${LOG_LEVEL:DEBUG}
+    com.financial.ai: DEBUG
     org.hibernate.SQL: ${SQL_LOG_LEVEL:DEBUG}
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.web: INFO
+    org.springframework.web.client: DEBUG
+    org.springframework.ai: DEBUG
+    org.springframework.ai.openai: DEBUG
+    reactor.netty.http.client: DEBUG
+    io.netty.handler.logging: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

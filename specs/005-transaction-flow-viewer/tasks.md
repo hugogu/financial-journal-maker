@@ -62,16 +62,16 @@
 
 ### Implementation for User Story 1
 
-- [ ] T017 [US1] Implement listProducts query in TransactionFlowService extracting from DesignDecision in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
-- [ ] T018 [US1] Implement getProduct and listScenarios queries in TransactionFlowService in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
-- [ ] T019 [US1] Implement listAllTransactionFlows with filters in TransactionFlowService in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
-- [ ] T020 [US1] Create TransactionFlowController with products endpoints (list, get, scenarios) in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
-- [ ] T021 [US1] Add transaction-flows list endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
+- [x] T017 [US1] Implement listProducts query in TransactionFlowService extracting from DesignDecision in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
+- [x] T018 [US1] Implement getProduct and listScenarios queries in TransactionFlowService in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
+- [x] T019 [US1] Implement listAllTransactionFlows with filters in TransactionFlowService in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
+- [x] T020 [US1] Create TransactionFlowController with products endpoints (list, get, scenarios) in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
+- [x] T021 [US1] Add transaction-flows list endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
 - [ ] T022 [P] [US1] Create ProductScenarioTree component with expand/collapse in frontend/components/flows/ProductScenarioTree.vue
-- [ ] T023 [P] [US1] Create TransactionFlowList component with table and summary counts in frontend/components/flows/TransactionFlowList.vue
-- [ ] T024 [US1] Extend useTransactionFlows with products and scenarios API calls in frontend/composables/useTransactionFlows.ts
-- [ ] T025 [US1] Create Transaction Flow Browser page with tree + list layout in frontend/pages/flows/index.vue
-- [ ] T026 [US1] Add search/filter functionality to Browser page in frontend/pages/flows/index.vue
+- [x] T023 [P] [US1] Create TransactionFlowList component with table and summary counts in frontend/components/flows/TransactionFlowList.vue
+- [x] T024 [US1] Extend useTransactionFlows with products and scenarios API calls in frontend/composables/useTransactionFlows.ts
+- [x] T025 [US1] Create Transaction Flow Browser page with tree + list layout in frontend/pages/flows/index.vue
+- [x] T026 [US1] Add search/filter functionality to Browser page in frontend/pages/flows/index.vue
 - [ ] T027 [US1] Add navigation link to flows in main navigation in frontend/layouts/default.vue or frontend/components/AppNavigation.vue
 
 **Checkpoint**: User Story 1 complete - users can browse all transaction flows hierarchically
@@ -86,14 +86,14 @@
 
 ### Implementation for User Story 2
 
-- [ ] T028 [US2] Implement getTransactionFlow in TransactionFlowService extracting full details in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
-- [ ] T029 [US2] Add getTransactionFlow endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
-- [ ] T030 [P] [US2] Create AccountsTable component showing code, name, type, state in frontend/components/flows/AccountsTable.vue
-- [ ] T031 [P] [US2] Create JournalEntriesTable component with DR/CR, grouping by trigger event in frontend/components/flows/JournalEntriesTable.vue
-- [ ] T032 [US2] Extend useTransactionFlows with getTransactionFlow API call in frontend/composables/useTransactionFlows.ts
-- [ ] T033 [US2] Create Transaction Flow Detail page with tabs structure in frontend/pages/flows/[code].vue
-- [ ] T034 [US2] Implement Accounts tab content in detail page in frontend/pages/flows/[code].vue
-- [ ] T035 [US2] Implement Journal Entries tab content in detail page in frontend/pages/flows/[code].vue
+- [x] T028 [US2] Implement getTransactionFlow in TransactionFlowService extracting full details in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
+- [x] T029 [US2] Add getTransactionFlow endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
+- [x] T030 [P] [US2] Create AccountsTable component showing code, name, type, state in frontend/components/flows/AccountsTable.vue
+- [x] T031 [P] [US2] Create JournalEntriesTable component with DR/CR, grouping by trigger event in frontend/components/flows/JournalEntriesTable.vue
+- [x] T032 [US2] Extend useTransactionFlows with getTransactionFlow API call in frontend/composables/useTransactionFlows.ts
+- [x] T033 [US2] Create Transaction Flow Detail page with tabs structure in frontend/pages/flows/[code].vue
+- [x] T034 [US2] Implement Accounts tab content in detail page in frontend/pages/flows/[code].vue
+- [x] T035 [US2] Implement Journal Entries tab content in detail page in frontend/pages/flows/[code].vue
 
 **Checkpoint**: User Story 2 complete - users can view full accounting structure for any transaction
 

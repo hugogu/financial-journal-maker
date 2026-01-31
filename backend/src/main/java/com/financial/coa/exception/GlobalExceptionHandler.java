@@ -1,6 +1,11 @@
 package com.financial.coa.exception;
 
 import com.financial.coa.dto.ErrorResponse;
+import com.financial.domain.exception.DomainException;
+import com.financial.domain.exception.DuplicateCodeException;
+import com.financial.domain.exception.EntityNotFoundException;
+import com.financial.domain.exception.HasChildrenException;
+import com.financial.domain.exception.ParentArchivedException;
 import com.financial.rules.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -251,6 +256,108 @@ public class GlobalExceptionHandler {
                 .build();
         
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityNotFound(
+            EntityNotFoundException ex, HttpServletRequest request) {
+        log.warn("Entity not found: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("ENTITY_NOT_FOUND")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(DuplicateCodeException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateCode(
+            DuplicateCodeException ex, HttpServletRequest request) {
+        log.warn("Duplicate code: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("DUPLICATE_CODE")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(HasChildrenException.class)
+    public ResponseEntity<ErrorResponse> handleHasChildren(
+            HasChildrenException ex, HttpServletRequest request) {
+        log.warn("Entity has children: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("HAS_CHILDREN")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(ParentArchivedException.class)
+    public ResponseEntity<ErrorResponse> handleParentArchived(
+            ParentArchivedException ex, HttpServletRequest request) {
+        log.warn("Parent is archived: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("PARENT_ARCHIVED")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(com.financial.domain.exception.InvalidStateTransitionException.class)
+    public ResponseEntity<ErrorResponse> handleDomainInvalidStateTransition(
+            com.financial.domain.exception.InvalidStateTransitionException ex, HttpServletRequest request) {
+        log.warn("Invalid state transition: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("INVALID_STATE_TRANSITION")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(DomainException.class)
+    public ResponseEntity<ErrorResponse> handleDomainException(
+            DomainException ex, HttpServletRequest request) {
+        log.warn("Domain exception: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode("DOMAIN_ERROR")
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(RulesException.class)

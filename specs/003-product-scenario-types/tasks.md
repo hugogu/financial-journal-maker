@@ -25,9 +25,9 @@
 
 **Purpose**: Database migration and shared components
 
-- [ ] T001 Create database migration `backend/src/main/resources/db/migration/V003__create_product_scenario_types.sql`
-- [ ] T002 [P] Create EntityStatus enum in `backend/src/main/java/com/financial/domain/domain/EntityStatus.java`
-- [ ] T003 [P] Create domain exception classes in `backend/src/main/java/com/financial/domain/exception/`
+- [x] T001 Create database migration `backend/src/main/resources/db/migration/V003__create_product_scenario_types.sql`
+- [x] T002 [P] Create EntityStatus enum in `backend/src/main/java/com/financial/domain/domain/EntityStatus.java`
+- [x] T003 [P] Create domain exception classes in `backend/src/main/java/com/financial/domain/exception/`
 
 ---
 
@@ -37,15 +37,15 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 [P] Create Product entity in `backend/src/main/java/com/financial/domain/domain/Product.java`
-- [ ] T005 [P] Create Scenario entity in `backend/src/main/java/com/financial/domain/domain/Scenario.java`
-- [ ] T006 [P] Create TransactionType entity in `backend/src/main/java/com/financial/domain/domain/TransactionType.java`
-- [ ] T007 [P] Create TransactionTypeRule entity in `backend/src/main/java/com/financial/domain/domain/TransactionTypeRule.java`
-- [ ] T008 [P] Create ProductRepository in `backend/src/main/java/com/financial/domain/repository/ProductRepository.java`
-- [ ] T009 [P] Create ScenarioRepository in `backend/src/main/java/com/financial/domain/repository/ScenarioRepository.java`
-- [ ] T010 [P] Create TransactionTypeRepository in `backend/src/main/java/com/financial/domain/repository/TransactionTypeRepository.java`
-- [ ] T011 [P] Create TransactionTypeRuleRepository in `backend/src/main/java/com/financial/domain/repository/TransactionTypeRuleRepository.java`
-- [ ] T012 Update CoaApplication.java to scan `com.financial.domain` package
+- [x] T004 [P] Create Product entity in `backend/src/main/java/com/financial/domain/domain/Product.java`
+- [x] T005 [P] Create Scenario entity in `backend/src/main/java/com/financial/domain/domain/Scenario.java`
+- [x] T006 [P] Create TransactionType entity in `backend/src/main/java/com/financial/domain/domain/TransactionType.java`
+- [x] T007 [P] Create TransactionTypeRule entity in `backend/src/main/java/com/financial/domain/domain/TransactionTypeRule.java`
+- [x] T008 [P] Create ProductRepository in `backend/src/main/java/com/financial/domain/repository/ProductRepository.java`
+- [x] T009 [P] Create ScenarioRepository in `backend/src/main/java/com/financial/domain/repository/ScenarioRepository.java`
+- [x] T010 [P] Create TransactionTypeRepository in `backend/src/main/java/com/financial/domain/repository/TransactionTypeRepository.java`
+- [x] T011 [P] Create TransactionTypeRuleRepository in `backend/src/main/java/com/financial/domain/repository/TransactionTypeRuleRepository.java`
+- [x] T012 Update CoaApplication.java to scan `com.financial.domain` package
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -59,27 +59,27 @@
 
 ### DTOs for User Story 1
 
-- [ ] T013 [P] [US1] Create ProductCreateRequest DTO in `backend/src/main/java/com/financial/domain/dto/ProductCreateRequest.java`
-- [ ] T014 [P] [US1] Create ProductUpdateRequest DTO in `backend/src/main/java/com/financial/domain/dto/ProductUpdateRequest.java`
-- [ ] T015 [P] [US1] Create ProductResponse DTO in `backend/src/main/java/com/financial/domain/dto/ProductResponse.java`
+- [x] T013 [P] [US1] Create ProductCreateRequest DTO in `backend/src/main/java/com/financial/domain/dto/ProductCreateRequest.java`
+- [x] T014 [P] [US1] Create ProductUpdateRequest DTO in `backend/src/main/java/com/financial/domain/dto/ProductUpdateRequest.java`
+- [x] T015 [P] [US1] Create ProductResponse DTO in `backend/src/main/java/com/financial/domain/dto/ProductResponse.java`
 
 ### Service for User Story 1
 
-- [ ] T016 [US1] Implement ProductService in `backend/src/main/java/com/financial/domain/service/ProductService.java`
+- [x] T016 [US1] Implement ProductService in `backend/src/main/java/com/financial/domain/service/ProductService.java`
   - createProduct, getProduct, getProductByCode, listProducts
   - updateProduct, deleteProduct (with child check)
   - activateProduct, archiveProduct, restoreProduct
 
 ### Controller for User Story 1
 
-- [ ] T017 [US1] Implement ProductController in `backend/src/main/java/com/financial/domain/controller/ProductController.java`
+- [x] T017 [US1] Implement ProductController in `backend/src/main/java/com/financial/domain/controller/ProductController.java`
   - POST /products, GET /products, GET /products/{id}, GET /products/code/{code}
   - PUT /products/{id}, DELETE /products/{id}
   - POST /products/{id}/activate, /archive, /restore
 
 ### Tests for User Story 1
 
-- [ ] T018 [US1] Create ProductControllerIntegrationTest in `backend/src/test/java/com/financial/domain/controller/ProductControllerIntegrationTest.java`
+- [x] T018 [US1] Create ProductControllerIntegrationTest in `backend/src/test/java/com/financial/domain/controller/ProductControllerIntegrationTest.java`
 
 **Checkpoint**: Product CRUD with lifecycle fully functional and testable
 
@@ -93,27 +93,27 @@
 
 ### DTOs for User Story 2
 
-- [ ] T019 [P] [US2] Create ScenarioCreateRequest DTO in `backend/src/main/java/com/financial/domain/dto/ScenarioCreateRequest.java`
-- [ ] T020 [P] [US2] Create ScenarioUpdateRequest DTO in `backend/src/main/java/com/financial/domain/dto/ScenarioUpdateRequest.java`
-- [ ] T021 [P] [US2] Create ScenarioResponse DTO in `backend/src/main/java/com/financial/domain/dto/ScenarioResponse.java`
+- [x] T019 [P] [US2] Create ScenarioCreateRequest DTO in `backend/src/main/java/com/financial/domain/dto/ScenarioCreateRequest.java`
+- [x] T020 [P] [US2] Create ScenarioUpdateRequest DTO in `backend/src/main/java/com/financial/domain/dto/ScenarioUpdateRequest.java`
+- [x] T021 [P] [US2] Create ScenarioResponse DTO in `backend/src/main/java/com/financial/domain/dto/ScenarioResponse.java`
 
 ### Service for User Story 2
 
-- [ ] T022 [US2] Implement ScenarioService in `backend/src/main/java/com/financial/domain/service/ScenarioService.java`
+- [x] T022 [US2] Implement ScenarioService in `backend/src/main/java/com/financial/domain/service/ScenarioService.java`
   - createScenario (check parent not ARCHIVED), getScenario, listScenarios
   - updateScenario, deleteScenario (with child check)
   - activateScenario, archiveScenario, restoreScenario
 
 ### Controller for User Story 2
 
-- [ ] T023 [US2] Implement ScenarioController in `backend/src/main/java/com/financial/domain/controller/ScenarioController.java`
+- [x] T023 [US2] Implement ScenarioController in `backend/src/main/java/com/financial/domain/controller/ScenarioController.java`
   - POST /scenarios, GET /scenarios, GET /scenarios/{id}
   - PUT /scenarios/{id}, DELETE /scenarios/{id}
   - POST /scenarios/{id}/activate, /archive, /restore
 
 ### Tests for User Story 2
 
-- [ ] T024 [US2] Create ScenarioControllerIntegrationTest in `backend/src/test/java/com/financial/domain/controller/ScenarioControllerIntegrationTest.java`
+- [x] T024 [US2] Create ScenarioControllerIntegrationTest in `backend/src/test/java/com/financial/domain/controller/ScenarioControllerIntegrationTest.java`
 
 **Checkpoint**: Scenario CRUD with lifecycle fully functional
 
@@ -127,15 +127,15 @@
 
 ### DTOs for User Story 3
 
-- [ ] T025 [P] [US3] Create TransactionTypeCreateRequest DTO in `backend/src/main/java/com/financial/domain/dto/TransactionTypeCreateRequest.java`
-- [ ] T026 [P] [US3] Create TransactionTypeUpdateRequest DTO in `backend/src/main/java/com/financial/domain/dto/TransactionTypeUpdateRequest.java`
-- [ ] T027 [P] [US3] Create TransactionTypeResponse DTO in `backend/src/main/java/com/financial/domain/dto/TransactionTypeResponse.java`
-- [ ] T028 [P] [US3] Create RuleAssociationRequest DTO in `backend/src/main/java/com/financial/domain/dto/RuleAssociationRequest.java`
-- [ ] T029 [P] [US3] Create RuleAssociation DTO in `backend/src/main/java/com/financial/domain/dto/RuleAssociation.java`
+- [x] T025 [P] [US3] Create TransactionTypeCreateRequest DTO in `backend/src/main/java/com/financial/domain/dto/TransactionTypeCreateRequest.java`
+- [x] T026 [P] [US3] Create TransactionTypeUpdateRequest DTO in `backend/src/main/java/com/financial/domain/dto/TransactionTypeUpdateRequest.java`
+- [x] T027 [P] [US3] Create TransactionTypeResponse DTO in `backend/src/main/java/com/financial/domain/dto/TransactionTypeResponse.java`
+- [x] T028 [P] [US3] Create RuleAssociationRequest DTO in `backend/src/main/java/com/financial/domain/dto/RuleAssociationRequest.java`
+- [x] T029 [P] [US3] Create RuleAssociation DTO in `backend/src/main/java/com/financial/domain/dto/RuleAssociationResponse.java`
 
 ### Service for User Story 3
 
-- [ ] T030 [US3] Implement TransactionTypeService in `backend/src/main/java/com/financial/domain/service/TransactionTypeService.java`
+- [x] T030 [US3] Implement TransactionTypeService in `backend/src/main/java/com/financial/domain/service/TransactionTypeService.java`
   - createTransactionType (check parent not ARCHIVED)
   - getTransactionType, listTransactionTypes
   - updateTransactionType, deleteTransactionType (cascade remove associations)
@@ -145,7 +145,7 @@
 
 ### Controller for User Story 3
 
-- [ ] T031 [US3] Implement TransactionTypeController in `backend/src/main/java/com/financial/domain/controller/TransactionTypeController.java`
+- [x] T031 [US3] Implement TransactionTypeController in `backend/src/main/java/com/financial/domain/controller/TransactionTypeController.java`
   - POST /transaction-types, GET /transaction-types, GET /transaction-types/{id}
   - PUT /transaction-types/{id}, DELETE /transaction-types/{id}
   - POST /transaction-types/{id}/activate, /archive, /restore
@@ -154,7 +154,7 @@
 
 ### Tests for User Story 3
 
-- [ ] T032 [US3] Create TransactionTypeControllerIntegrationTest in `backend/src/test/java/com/financial/domain/controller/TransactionTypeControllerIntegrationTest.java`
+- [x] T032 [US3] Create TransactionTypeControllerIntegrationTest in `backend/src/test/java/com/financial/domain/controller/TransactionTypeControllerIntegrationTest.java`
 
 **Checkpoint**: TransactionType CRUD with rule associations fully functional
 
@@ -168,15 +168,15 @@
 
 ### DTOs for User Story 4
 
-- [ ] T033 [P] [US4] Create ProductTreeResponse DTO in `backend/src/main/java/com/financial/domain/dto/ProductTreeResponse.java`
-- [ ] T034 [P] [US4] Create ScenarioTreeNode DTO in `backend/src/main/java/com/financial/domain/dto/ScenarioTreeNode.java`
-- [ ] T035 [P] [US4] Create TransactionTypeTreeNode DTO in `backend/src/main/java/com/financial/domain/dto/TransactionTypeTreeNode.java`
-- [ ] T036 [P] [US4] Create RuleSummary DTO in `backend/src/main/java/com/financial/domain/dto/RuleSummary.java`
-- [ ] T037 [P] [US4] Create AccountSummary DTO in `backend/src/main/java/com/financial/domain/dto/AccountSummary.java`
+- [x] T033 [P] [US4] Create ProductTreeResponse DTO in `backend/src/main/java/com/financial/domain/dto/ProductTreeResponse.java`
+- [x] T034 [P] [US4] Create ScenarioTreeNode DTO in `backend/src/main/java/com/financial/domain/dto/ScenarioTreeNode.java`
+- [x] T035 [P] [US4] Create TransactionTypeTreeNode DTO in `backend/src/main/java/com/financial/domain/dto/TransactionTypeTreeNode.java`
+- [x] T036 [P] [US4] Create RuleSummary DTO in `backend/src/main/java/com/financial/domain/dto/RuleSummary.java`
+- [x] T037 [P] [US4] Create AccountSummary DTO in `backend/src/main/java/com/financial/domain/dto/AccountSummary.java`
 
 ### Service for User Story 4
 
-- [ ] T038 [US4] Implement HierarchyService in `backend/src/main/java/com/financial/domain/service/HierarchyService.java`
+- [x] T038 [US4] Implement HierarchyService in `backend/src/main/java/com/financial/domain/service/HierarchyService.java`
   - getProductTree(productId) - returns full hierarchy
   - getProductRules(productId) - aggregate rules from all types
   - getProductAccounts(productId) - aggregate accounts from rules
@@ -185,18 +185,18 @@
 
 ### Controller Additions for User Story 4
 
-- [ ] T039 [US4] Add tree and aggregate endpoints to ProductController
+- [x] T039 [US4] Add tree and aggregate endpoints to ProductController
   - GET /products/{id}/tree
   - GET /products/{id}/rules
   - GET /products/{id}/accounts
 
-- [ ] T040 [US4] Add aggregate endpoints to ScenarioController
+- [x] T040 [US4] Add aggregate endpoints to ScenarioController
   - GET /scenarios/{id}/rules
   - GET /scenarios/{id}/accounts
 
 ### Tests for User Story 4
 
-- [ ] T041 [US4] Add hierarchy tests to existing integration tests
+- [x] T041 [US4] Add hierarchy tests to existing integration tests
 
 **Checkpoint**: Hierarchical navigation and aggregate queries functional
 
@@ -210,32 +210,32 @@
 
 ### DTOs for User Story 5
 
-- [ ] T042 [P] [US5] Create CloneRequest DTO in `backend/src/main/java/com/financial/domain/dto/CloneRequest.java`
-- [ ] T043 [P] [US5] Create ScenarioCloneRequest DTO in `backend/src/main/java/com/financial/domain/dto/ScenarioCloneRequest.java`
+- [x] T042 [P] [US5] Create CloneRequest DTO in `backend/src/main/java/com/financial/domain/dto/CloneRequest.java`
+- [x] T043 [P] [US5] Create ScenarioCloneRequest DTO in `backend/src/main/java/com/financial/domain/dto/ScenarioCloneRequest.java`
 
 ### Service for User Story 5
 
-- [ ] T044 [US5] Add cloneProduct to ProductService
+- [x] T044 [US5] Add cloneProduct to ProductService
   - Deep copy product → scenarios → types
   - Generate unique code with -copy-N suffix
   - Do NOT copy rule associations
 
-- [ ] T045 [US5] Add cloneScenario to ScenarioService
+- [x] T045 [US5] Add cloneScenario to ScenarioService
   - Copy scenario → types to same or different product
   - Generate unique code with -copy-N suffix
   - Do NOT copy rule associations
 
 ### Controller Additions for User Story 5
 
-- [ ] T046 [US5] Add clone endpoints to ProductController
+- [x] T046 [US5] Add clone endpoints to ProductController
   - POST /products/{id}/clone
 
-- [ ] T047 [US5] Add clone endpoints to ScenarioController
+- [x] T047 [US5] Add clone endpoints to ScenarioController
   - POST /scenarios/{id}/clone
 
 ### Tests for User Story 5
 
-- [ ] T048 [US5] Add clone tests to integration tests
+- [x] T048 [US5] Add clone tests to integration tests
 
 **Checkpoint**: Template cloning fully functional
 
@@ -245,11 +245,11 @@
 
 **Purpose**: Final integration and quality improvements
 
-- [ ] T049 [P] Update OpenAPI/Swagger annotations on all controllers
-- [ ] T050 [P] Add comprehensive logging to all services
-- [ ] T051 Run full integration test suite and fix any failures
-- [ ] T052 Validate against quickstart.md examples
-- [ ] T053 Update README-STARTUP.md with new API endpoints
+- [x] T049 [P] Update OpenAPI/Swagger annotations on all controllers
+- [x] T050 [P] Add comprehensive logging to all services
+- [x] T051 Run full integration test suite and fix any failures
+- [x] T052 Validate against quickstart.md examples
+- [x] T053 Update README-STARTUP.md with new API endpoints
 
 ---
 

@@ -283,6 +283,60 @@ export LOG_LEVEL=DEBUG
    - 已在 pom.xml 中配置
    - 支持自动重启和热重载
 
+## API 端点
+
+### Product API (`/api/v1/products`)
+
+| 方法 | 路径 | 描述 |
+|------|------|------|
+| POST | `/api/v1/products` | 创建产品 |
+| GET | `/api/v1/products` | 列出产品（分页） |
+| GET | `/api/v1/products/{id}` | 获取产品详情 |
+| GET | `/api/v1/products/code/{code}` | 按代码获取产品 |
+| PUT | `/api/v1/products/{id}` | 更新产品 |
+| DELETE | `/api/v1/products/{id}` | 删除产品 |
+| POST | `/api/v1/products/{id}/activate` | 激活产品 |
+| POST | `/api/v1/products/{id}/archive` | 归档产品 |
+| POST | `/api/v1/products/{id}/restore` | 恢复产品 |
+| GET | `/api/v1/products/{id}/tree` | 获取产品层级树 |
+| GET | `/api/v1/products/{id}/rules` | 获取产品关联规则 |
+| GET | `/api/v1/products/{id}/accounts` | 获取产品使用的科目 |
+| POST | `/api/v1/products/{id}/clone` | 克隆产品 |
+
+### Scenario API (`/api/v1/scenarios`)
+
+| 方法 | 路径 | 描述 |
+|------|------|------|
+| POST | `/api/v1/scenarios` | 创建场景 |
+| GET | `/api/v1/scenarios` | 列出场景（分页） |
+| GET | `/api/v1/scenarios/{id}` | 获取场景详情 |
+| GET | `/api/v1/scenarios/code/{code}` | 按代码获取场景 |
+| PUT | `/api/v1/scenarios/{id}` | 更新场景 |
+| DELETE | `/api/v1/scenarios/{id}` | 删除场景 |
+| POST | `/api/v1/scenarios/{id}/activate` | 激活场景 |
+| POST | `/api/v1/scenarios/{id}/archive` | 归档场景 |
+| POST | `/api/v1/scenarios/{id}/restore` | 恢复场景 |
+| GET | `/api/v1/scenarios/{id}/rules` | 获取场景关联规则 |
+| GET | `/api/v1/scenarios/{id}/accounts` | 获取场景使用的科目 |
+| POST | `/api/v1/scenarios/{id}/clone` | 克隆场景 |
+
+### TransactionType API (`/api/v1/transaction-types`)
+
+| 方法 | 路径 | 描述 |
+|------|------|------|
+| POST | `/api/v1/transaction-types` | 创建交易类型 |
+| GET | `/api/v1/transaction-types` | 列出交易类型（分页） |
+| GET | `/api/v1/transaction-types/{id}` | 获取交易类型详情 |
+| GET | `/api/v1/transaction-types/code/{code}` | 按代码获取交易类型 |
+| PUT | `/api/v1/transaction-types/{id}` | 更新交易类型 |
+| DELETE | `/api/v1/transaction-types/{id}` | 删除交易类型 |
+| POST | `/api/v1/transaction-types/{id}/activate` | 激活交易类型 |
+| POST | `/api/v1/transaction-types/{id}/archive` | 归档交易类型 |
+| POST | `/api/v1/transaction-types/{id}/restore` | 恢复交易类型 |
+| POST | `/api/v1/transaction-types/{id}/rules` | 关联规则 |
+| GET | `/api/v1/transaction-types/{id}/rules` | 获取关联的规则 |
+| DELETE | `/api/v1/transaction-types/{id}/rules/{ruleId}` | 移除规则关联 |
+
 ## 技术栈
 
 - **Java 17** - 编程语言

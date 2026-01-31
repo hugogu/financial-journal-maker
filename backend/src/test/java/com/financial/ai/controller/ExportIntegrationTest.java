@@ -2,10 +2,10 @@ package com.financial.ai.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.financial.ai.domain.DesignPhase;
-import com.financial.ai.domain.ExportType;
 import com.financial.ai.dto.DecisionRequest;
 import com.financial.ai.dto.SessionCreateRequest;
 import com.financial.ai.repository.SessionRepository;
+import com.financial.coa.CoaApplication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -26,7 +26,7 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(classes = CoaApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional

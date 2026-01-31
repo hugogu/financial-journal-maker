@@ -31,18 +31,30 @@ public class AIConfigService {
 
     @Transactional
     public AIConfigResponse createConfiguration(AIConfigRequest request) {
+        String endpoint = request.getEndpoint() != null ? request.getEndpoint() : getDefaultEndpoint(request.getProviderName());
         AIConfiguration config = AIConfiguration.builder()
                 .providerName(request.getProviderName())
+                .displayName(request.getProviderName() + " - " + request.getModelName())
                 .modelName(request.getModelName())
                 .apiKey(encryptApiKey(request.getApiKey()))
-                .endpoint(request.getEndpoint())
+                .endpoint(endpoint)
                 .isActive(false)
+                .priority(0)
                 .build();
 
         config = configRepository.save(config);
         log.info("Created AI configuration for provider: {}", request.getProviderName());
 
         return toResponse(config);
+    }
+    
+    private String getDefaultEndpoint(String providerName) {
+        return switch (providerName.toLowerCase()) {
+            case "openai" -> "https://api.openai.com";
+            case "anthropic" -> "https://api.anthropic.com";
+            case "azure" -> "https://api.openai.azure.com";
+            default -> "https://api.openai.com";
+        };
     }
 
     @Transactional(readOnly = true)

@@ -3,6 +3,7 @@ package com.financial.ai.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.financial.ai.dto.AIConfigRequest;
 import com.financial.ai.repository.AIConfigRepository;
+import com.financial.coa.CoaApplication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,7 +21,7 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(classes = CoaApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
@@ -112,7 +113,7 @@ class AIConfigControllerIntegrationTest {
                     .andExpect(status().isNoContent());
 
             mockMvc.perform(get("/api/v1/admin/ai-config/{id}", configId))
-                    .andExpect(status().is4xxClientError());
+                    .andExpect(status().isNotFound());
         }
     }
 
@@ -174,7 +175,7 @@ class AIConfigControllerIntegrationTest {
             activateConfig(configId);
 
             mockMvc.perform(delete("/api/v1/admin/ai-config/{id}", configId))
-                    .andExpect(status().is5xxServerError());
+                    .andExpect(status().isConflict());
         }
     }
 

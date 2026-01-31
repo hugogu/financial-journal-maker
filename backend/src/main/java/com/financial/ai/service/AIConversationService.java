@@ -70,18 +70,23 @@ public class AIConversationService {
 
         StringBuilder fullResponse = new StringBuilder();
 
-        return chatClient.prompt()
+        Flux<String> contentStream = chatClient.prompt()
                 .system(systemPrompt)
                 .user(conversationContext + "\n\nUser: " + request.getContent())
                 .stream()
-                .content()
+                .content();
+        
+        log.debug("STREAMING - Content stream created, subscribing to chunks");
+        
+        return contentStream
+                .doOnSubscribe(sub -> log.debug("STREAMING - Stream subscribed"))
                 .doOnNext(chunk -> {
                     fullResponse.append(chunk);
-                    log.trace("STREAMING - Received chunk: {}", chunk.length() > 50 ? chunk.substring(0, 50) + "..." : chunk);
+                    log.debug("STREAMING - Emitting chunk of length: {}", chunk.length());
                 })
                 .doOnComplete(() -> {
+                    log.info("STREAMING - Stream completed, saving full response of length: {}", fullResponse.length());
                     saveAssistantMessage(sessionId, fullResponse.toString());
-                    log.info("STREAMING - Completed streaming response for session {}", sessionId);
                 })
                 .doOnError(error -> {
                     log.error("STREAMING - Error streaming response for session {}: {}", sessionId, error.getMessage(), error);

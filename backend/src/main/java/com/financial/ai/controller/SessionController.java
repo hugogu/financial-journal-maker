@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/sessions")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Sessions", description = "Analysis session management")
 public class SessionController {
 
@@ -104,11 +106,17 @@ public class SessionController {
 
     @PostMapping(value = "/{sessionId}/messages/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Operation(summary = "Send message (streaming)", description = "Send a message and receive AI response as SSE stream")
-    public Flux<String> sendMessageStream(
+    public Flux<org.springframework.http.codec.ServerSentEvent<String>> sendMessageStream(
             @PathVariable Long sessionId,
             @Valid @RequestBody MessageRequest request) {
         return conversationService.streamMessage(sessionId, request)
-                .map(chunk -> "data: " + chunk.replace("\n", "\\n") + "\n\n");
+                .doOnSubscribe(sub -> log.debug("Controller - Stream subscribed for session {}", sessionId))
+                .filter(chunk -> chunk != null && !chunk.isEmpty())
+                .doOnNext(chunk -> log.debug("Controller - Raw chunk: [{}]", chunk))
+                .map(chunk -> org.springframework.http.codec.ServerSentEvent.<String>builder()
+                        .data(chunk)
+                        .build())
+                .doOnComplete(() -> log.debug("Controller - Stream completed for session {}", sessionId));
     }
 
     @GetMapping("/{sessionId}/decisions")

@@ -13,13 +13,13 @@
           <p class="hint">The AI will guide you through Product → Scenario → Transaction Type → Accounting design phases.</p>
         </div>
       </div>
-      <MessageBubble
+      <SessionMessageBubble
         v-for="message in messages"
         :key="message.id"
         :message="message"
       />
       <div v-if="isStreaming" class="streaming-indicator">
-        <MessageBubble
+        <SessionMessageBubble
           :message="{ id: 0, role: 'ASSISTANT', content: currentResponse || 'Thinking...', createdAt: '' }"
         />
       </div>

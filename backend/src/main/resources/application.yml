@@ -2,6 +2,12 @@ spring:
   application:
     name: financial-journal-maker
   
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:dummy-key-will-be-overridden-by-config}
+      chat:
+        enabled: false
+  
   web:
     resources:
       add-mappings: true

@@ -337,6 +337,61 @@ export LOG_LEVEL=DEBUG
 | GET | `/api/v1/transaction-types/{id}/rules` | 获取关联的规则 |
 | DELETE | `/api/v1/transaction-types/{id}/rules/{ruleId}` | 移除规则关联 |
 
+### AI Analysis Session API (`/api/v1/sessions`)
+
+| 方法 | 路径 | 描述 |
+|------|------|------|
+| POST | `/api/v1/sessions` | 创建分析会话 |
+| GET | `/api/v1/sessions` | 列出会话（分页） |
+| GET | `/api/v1/sessions/{id}` | 获取会话详情 |
+| PUT | `/api/v1/sessions/{id}` | 更新会话 |
+| DELETE | `/api/v1/sessions/{id}` | 删除会话 |
+| POST | `/api/v1/sessions/{id}/pause` | 暂停会话 |
+| POST | `/api/v1/sessions/{id}/resume` | 恢复会话 |
+| POST | `/api/v1/sessions/{id}/complete` | 完成会话 |
+| POST | `/api/v1/sessions/{id}/archive` | 归档会话 |
+| GET | `/api/v1/sessions/{id}/messages` | 获取会话消息 |
+| POST | `/api/v1/sessions/{id}/messages` | 发送消息（非流式） |
+| POST | `/api/v1/sessions/{id}/messages/stream` | 发送消息（SSE流式） |
+| GET | `/api/v1/sessions/{id}/decisions` | 获取设计决策 |
+| POST | `/api/v1/sessions/{id}/decisions` | 确认决策 |
+| POST | `/api/v1/sessions/{id}/export/{type}` | 导出设计（COA/RULES/NUMSCRIPT） |
+
+### AI Configuration API (`/admin/ai-config`)
+
+| 方法 | 路径 | 描述 |
+|------|------|------|
+| GET | `/admin/ai-config` | 列出AI配置 |
+| POST | `/admin/ai-config` | 创建AI配置 |
+| GET | `/admin/ai-config/{id}` | 获取配置详情 |
+| PUT | `/admin/ai-config/{id}` | 更新配置 |
+| DELETE | `/admin/ai-config/{id}` | 删除配置 |
+| POST | `/admin/ai-config/{id}/activate` | 激活配置 |
+| POST | `/admin/ai-config/{id}/test` | 测试配置连通性 |
+
+### Prompt Templates API (`/admin/prompts`)
+
+| 方法 | 路径 | 描述 |
+|------|------|------|
+| GET | `/admin/prompts` | 列出所有提示词模板 |
+| POST | `/admin/prompts` | 创建提示词模板 |
+| GET | `/admin/prompts/{id}` | 获取模板详情 |
+| PUT | `/admin/prompts/{id}` | 更新模板（创建新版本） |
+| DELETE | `/admin/prompts/{id}` | 删除模板 |
+| GET | `/admin/prompts/phase/{phase}` | 按阶段获取模板 |
+| GET | `/admin/prompts/phase/{phase}/active` | 获取阶段的激活模板 |
+| POST | `/admin/prompts/{id}/activate` | 激活模板 |
+| GET | `/admin/prompts/history/{name}` | 获取版本历史 |
+| POST | `/admin/prompts/rollback` | 回滚到指定版本 |
+| POST | `/admin/prompts/initialize` | 初始化默认模板 |
+
+## 前端访问
+
+- **首页**: http://localhost:3000
+- **AI分析会话**: http://localhost:3000/analysis
+- **AI配置管理**: http://localhost:3000/admin/ai-config
+- **提示词管理**: http://localhost:3000/admin/prompts
+
 ## 技术栈
 
 - **Java 17** - 编程语言

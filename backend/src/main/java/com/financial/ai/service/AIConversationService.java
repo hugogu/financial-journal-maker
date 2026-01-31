@@ -31,6 +31,7 @@ public class AIConversationService {
     private final PromptRepository promptRepository;
     private final LLMClientProvider llmClientProvider;
     private final DecisionService decisionService;
+    private final SystemDataService systemDataService;
 
     @Transactional
     public MessageResponse sendMessage(Long sessionId, MessageRequest request) {
@@ -163,9 +164,34 @@ public class AIConversationService {
     private String buildSystemPrompt(AnalysisSession session) {
         DesignPhase phase = session.getCurrentPhase();
         
-        return promptRepository.findByDesignPhaseAndIsActiveTrue(phase)
+        String basePrompt = promptRepository.findByDesignPhaseAndIsActiveTrue(phase)
                 .map(PromptTemplate::getContent)
                 .orElseGet(() -> getDefaultSystemPrompt(phase));
+        
+        // Enrich prompt with system data context
+        return enrichPromptWithSystemData(basePrompt, session);
+    }
+    
+    private String enrichPromptWithSystemData(String prompt, AnalysisSession session) {
+        SystemDataService.SystemDataContext context = 
+                systemDataService.buildContextForPhase(session.getCurrentPhase().name());
+        
+        // Get confirmed decisions for this session
+        List<DecisionResponse> confirmedDecisions = decisionService.getConfirmedDecisions(session.getId());
+        String decisionsText = confirmedDecisions.isEmpty() 
+                ? "No decisions confirmed yet."
+                : confirmedDecisions.stream()
+                        .map(d -> String.format("- [%s] %s", d.getDecisionType(), d.getContent()))
+                        .collect(Collectors.joining("\n"));
+        
+        // Replace template variables
+        return prompt
+                .replace("{{existingProducts}}", context.getExistingProducts())
+                .replace("{{existingScenarios}}", context.getExistingScenarios())
+                .replace("{{existingTransactionTypes}}", context.getExistingTransactionTypes())
+                .replace("{{accountingRules}}", context.getAccountingRules())
+                .replace("{{chartOfAccounts}}", context.getChartOfAccounts())
+                .replace("{{confirmedDecisions}}", decisionsText);
     }
 
     private String getDefaultSystemPrompt(DesignPhase phase) {

@@ -175,16 +175,16 @@
 
 ### Implementation for User Story 5
 
-- [ ] T077 [US5] Create PromptService in backend/src/main/java/com/financial/ai/service/PromptService.java
-- [ ] T078 [US5] Implement prompt versioning and rollback in PromptService
-- [ ] T079 [US5] Implement prompt activation (one active per phase)
-- [ ] T080 [US5] Create prompt DTOs (PromptRequest, PromptResponse) in backend/src/main/java/com/financial/ai/dto/
-- [ ] T081 [US5] Create PromptController in backend/src/main/java/com/financial/ai/controller/PromptController.java
-- [ ] T082 [P] [US5] Add OpenAPI annotations to PromptController
-- [ ] T083 [P] [US5] Create PromptEditor component in frontend/components/admin/PromptEditor.vue
-- [ ] T084 [US5] Create prompts admin page in frontend/pages/admin/prompts.vue
-- [ ] T085 [US5] Integrate prompt templates into AIConversationService
-- [ ] T086 [US5] Write integration test for prompt management in backend/src/test/java/com/financial/ai/controller/PromptControllerIntegrationTest.java
+- [x] T077 [US5] Create PromptService in backend/src/main/java/com/financial/ai/service/PromptService.java
+- [x] T078 [US5] Implement prompt versioning and rollback in PromptService
+- [x] T079 [US5] Implement prompt activation (one active per phase)
+- [x] T080 [US5] Create prompt DTOs (PromptRequest, PromptResponse) in backend/src/main/java/com/financial/ai/dto/
+- [x] T081 [US5] Create PromptController in backend/src/main/java/com/financial/ai/controller/PromptController.java
+- [x] T082 [P] [US5] Add OpenAPI annotations to PromptController
+- [x] T083 [P] [US5] Create PromptEditor component in frontend/components/admin/PromptEditor.vue
+- [x] T084 [US5] Create prompts admin page in frontend/pages/admin/prompts.vue
+- [x] T085 [US5] Integrate prompt templates into AIConversationService
+- [x] T086 [US5] Write integration test for prompt management in backend/src/test/java/com/financial/ai/controller/PromptControllerIntegrationTest.java
 
 **Checkpoint**: User Story 5 complete - admin can manage custom prompts with versioning
 
@@ -198,13 +198,13 @@
 
 ### Implementation for User Story 6
 
-- [ ] T087 [US6] Create SystemDataService to query existing domain entities in backend/src/main/java/com/financial/ai/service/SystemDataService.java
-- [ ] T088 [US6] Implement product/scenario/transactionType retrieval methods
-- [ ] T089 [US6] Implement accounting rules retrieval for AI context
-- [ ] T090 [US6] Integrate SystemDataService into AIConversationService for context enrichment
-- [ ] T091 [US6] Add existing data summary to AI prompts ({{existingProducts}}, etc.)
-- [ ] T092 [US6] Support linking decisions to existing entities (linkedEntityId)
-- [ ] T093 [US6] Write integration test for system data integration in backend/src/test/java/com/financial/ai/controller/SystemDataIntegrationTest.java
+- [x] T087 [US6] Create SystemDataService to query existing domain entities in backend/src/main/java/com/financial/ai/service/SystemDataService.java
+- [x] T088 [US6] Implement product/scenario/transactionType retrieval methods
+- [x] T089 [US6] Implement accounting rules retrieval for AI context
+- [x] T090 [US6] Integrate SystemDataService into AIConversationService for context enrichment
+- [x] T091 [US6] Add existing data summary to AI prompts ({{existingProducts}}, etc.)
+- [x] T092 [US6] Support linking decisions to existing entities (linkedEntityId)
+- [x] T093 [US6] Write integration test for system data integration in backend/src/test/java/com/financial/ai/controller/SystemDataIntegrationTest.java
 
 **Checkpoint**: User Story 6 complete - AI references existing system data in suggestions
 
@@ -214,14 +214,14 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T094 [P] Update OpenAPI/Swagger annotations on all controllers
-- [ ] T095 [P] Add comprehensive logging to all services
-- [ ] T096 Run full integration test suite and fix any failures
-- [ ] T097 Validate against quickstart.md examples
-- [ ] T098 Update README-STARTUP.md with new API endpoints
-- [ ] T099 [P] Add frontend error handling and loading states
-- [ ] T100 [P] Update docker-compose.yml for frontend service
-- [ ] T101 Final code cleanup and documentation review
+- [x] T094 [P] Update OpenAPI/Swagger annotations on all controllers
+- [x] T095 [P] Add comprehensive logging to all services
+- [x] T096 Run full integration test suite and fix any failures
+- [x] T097 Validate against quickstart.md examples
+- [x] T098 Update README-STARTUP.md with new API endpoints
+- [x] T099 [P] Add frontend error handling and loading states
+- [x] T100 [P] Update docker-compose.yml for frontend service
+- [x] T101 Final code cleanup and documentation review
 
 ---
 

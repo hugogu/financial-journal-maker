@@ -1,6 +1,7 @@
 package com.financial.coa.exception;
 
 import com.financial.coa.dto.ErrorResponse;
+import com.financial.rules.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -163,6 +164,110 @@ public class GlobalExceptionHandler {
                 .build();
         
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(RuleNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleRuleNotFound(
+            RuleNotFoundException ex, HttpServletRequest request) {
+        log.warn("Rule not found: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode(ex.getErrorCode())
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(RuleValidationException.class)
+    public ResponseEntity<ErrorResponse> handleRuleValidation(
+            RuleValidationException ex, HttpServletRequest request) {
+        log.warn("Rule validation failed: {}", ex.getMessage());
+        
+        Map<String, Object> details = new HashMap<>();
+        if (!ex.getValidationErrors().isEmpty()) {
+            details.put("validationErrors", ex.getValidationErrors());
+        }
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode(ex.getErrorCode())
+                .details(details.isEmpty() ? null : details)
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ExpressionParseException.class)
+    public ResponseEntity<ErrorResponse> handleExpressionParse(
+            ExpressionParseException ex, HttpServletRequest request) {
+        log.warn("Expression parse error: {}", ex.getMessage());
+        
+        Map<String, Object> details = new HashMap<>();
+        details.put("expression", ex.getExpression());
+        if (ex.getPosition() >= 0) {
+            details.put("position", ex.getPosition());
+        }
+        if (ex.getExpected() != null) {
+            details.put("expected", ex.getExpected());
+        }
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode(ex.getErrorCode())
+                .details(details)
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(InvalidStateTransitionException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidStateTransition(
+            InvalidStateTransitionException ex, HttpServletRequest request) {
+        log.warn("Invalid state transition: {}", ex.getMessage());
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode(ex.getErrorCode())
+                .details(Map.of(
+                        "currentStatus", ex.getCurrentStatus(),
+                        "targetStatus", ex.getTargetStatus()))
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(RulesException.class)
+    public ResponseEntity<ErrorResponse> handleRulesException(
+            RulesException ex, HttpServletRequest request) {
+        log.error("Rules exception: {}", ex.getMessage(), ex);
+        
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .errorCode(ex.getErrorCode())
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
     @ExceptionHandler(CoaException.class)

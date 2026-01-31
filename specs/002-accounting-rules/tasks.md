@@ -33,11 +33,11 @@
 
 **Purpose**: Project initialization for rules module
 
-- [ ] T001 Create rules module package structure in backend/src/main/java/com/financial/rules/ with subpackages: domain, repository, dto, service, controller, exception
-- [ ] T002 [P] Create Flyway migration V2__create_rules_tables.sql in backend/src/main/resources/db/migration/ with schema from data-model.md
-- [ ] T003 [P] Create RulesException base class in backend/src/main/java/com/financial/rules/exception/RulesException.java
-- [ ] T004 [P] Create domain-specific exceptions in backend/src/main/java/com/financial/rules/exception/: RuleNotFoundException, RuleValidationException, ExpressionParseException, InvalidStateTransitionException
-- [ ] T005 [P] Add rules exception handling to GlobalExceptionHandler in backend/src/main/java/com/financial/coa/exception/GlobalExceptionHandler.java
+- [x] T001 Create rules module package structure in backend/src/main/java/com/financial/rules/ with subpackages: domain, repository, dto, service, controller, exception
+- [x] T002 [P] Create Flyway migration V2__create_rules_tables.sql in backend/src/main/resources/db/migration/ with schema from data-model.md
+- [x] T003 [P] Create RulesException base class in backend/src/main/java/com/financial/rules/exception/RulesException.java
+- [x] T004 [P] Create domain-specific exceptions in backend/src/main/java/com/financial/rules/exception/: RuleNotFoundException, RuleValidationException, ExpressionParseException, InvalidStateTransitionException
+- [x] T005 [P] Add rules exception handling to GlobalExceptionHandler in backend/src/main/java/com/financial/coa/exception/GlobalExceptionHandler.java
 
 ---
 
@@ -49,17 +49,17 @@
 
 ### Domain Models (Core Entities)
 
-- [ ] T006 Create AccountingRule entity in backend/src/main/java/com/financial/rules/domain/AccountingRule.java with fields: id, code, name, description, status (enum), sharedAcrossScenarios, currentVersion, version (optimistic), timestamps, audit fields
-- [ ] T007 [P] Create RuleStatus enum in backend/src/main/java/com/financial/rules/domain/RuleStatus.java with values: DRAFT, ACTIVE, ARCHIVED
-- [ ] T008 [P] Create AccountingRuleVersion entity in backend/src/main/java/com/financial/rules/domain/AccountingRuleVersion.java with fields: id, ruleId, versionNumber, snapshotJson, changeDescription, createdAt, createdBy
-- [ ] T009 [P] Create EntryTemplate entity in backend/src/main/java/com/financial/rules/domain/EntryTemplate.java with fields: id, ruleId (unique), description, variableSchemaJson, timestamps
-- [ ] T010 [P] Create EntryLine entity in backend/src/main/java/com/financial/rules/domain/EntryLine.java with fields: id, templateId, sequenceNumber, accountCode, entryType (enum), amountExpression, memoTemplate, timestamps
-- [ ] T011 [P] Create EntryType enum in backend/src/main/java/com/financial/rules/domain/EntryType.java with values: DEBIT, CREDIT
-- [ ] T012 [P] Create TriggerCondition entity in backend/src/main/java/com/financial/rules/domain/TriggerCondition.java with fields: id, ruleId, conditionJson, description, timestamps
+- [x] T006 Create AccountingRule entity in backend/src/main/java/com/financial/rules/domain/AccountingRule.java with fields: id, code, name, description, status (enum), sharedAcrossScenarios, currentVersion, version (optimistic), timestamps, audit fields
+- [x] T007 [P] Create RuleStatus enum in backend/src/main/java/com/financial/rules/domain/RuleStatus.java with values: DRAFT, ACTIVE, ARCHIVED
+- [x] T008 [P] Create AccountingRuleVersion entity in backend/src/main/java/com/financial/rules/domain/AccountingRuleVersion.java with fields: id, ruleId, versionNumber, snapshotJson, changeDescription, createdAt, createdBy
+- [x] T009 [P] Create EntryTemplate entity in backend/src/main/java/com/financial/rules/domain/EntryTemplate.java with fields: id, ruleId (unique), description, variableSchemaJson, timestamps
+- [x] T010 [P] Create EntryLine entity in backend/src/main/java/com/financial/rules/domain/EntryLine.java with fields: id, templateId, sequenceNumber, accountCode, entryType (enum), amountExpression, memoTemplate, timestamps
+- [x] T011 [P] Create EntryType enum in backend/src/main/java/com/financial/rules/domain/EntryType.java with values: DEBIT, CREDIT
+- [x] T012 [P] Create TriggerCondition entity in backend/src/main/java/com/financial/rules/domain/TriggerCondition.java with fields: id, ruleId, conditionJson, description, timestamps
 
 ### Repositories
 
-- [ ] T013 Create AccountingRuleRepository in backend/src/main/java/com/financial/rules/repository/AccountingRuleRepository.java with methods: findByCode, findByStatus, existsByCode, findBySharedAcrossScenariosTrue
+- [x] T013 Create AccountingRuleRepository in backend/src/main/java/com/financial/rules/repository/AccountingRuleRepository.java with methods: findByCode, findByStatus, existsByCode, findBySharedAcrossScenariosTrue
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -73,31 +73,31 @@
 
 ### Repositories for US1+US2
 
-- [ ] T014 [P] [US1] Create AccountingRuleVersionRepository in backend/src/main/java/com/financial/rules/repository/AccountingRuleVersionRepository.java with methods: findByRuleIdOrderByVersionNumberDesc, findByRuleIdAndVersionNumber
-- [ ] T015 [P] [US2] Create EntryTemplateRepository in backend/src/main/java/com/financial/rules/repository/EntryTemplateRepository.java with methods: findByRuleId
-- [ ] T016 [P] [US2] Create EntryLineRepository in backend/src/main/java/com/financial/rules/repository/EntryLineRepository.java with methods: findByTemplateIdOrderBySequenceNumber, deleteByTemplateId
+- [x] T014 [P] [US1] Create AccountingRuleVersionRepository in backend/src/main/java/com/financial/rules/repository/AccountingRuleVersionRepository.java with methods: findByRuleIdOrderByVersionNumberDesc, findByRuleIdAndVersionNumber
+- [x] T015 [P] [US2] Create EntryTemplateRepository in backend/src/main/java/com/financial/rules/repository/EntryTemplateRepository.java with methods: findByRuleId
+- [x] T016 [P] [US2] Create EntryLineRepository in backend/src/main/java/com/financial/rules/repository/EntryLineRepository.java with methods: findByTemplateIdOrderBySequenceNumber, deleteByTemplateId
 
 ### DTOs for US1+US2
 
-- [ ] T017 [P] [US1] Create RuleCreateRequest DTO in backend/src/main/java/com/financial/rules/dto/RuleCreateRequest.java with validation annotations
-- [ ] T018 [P] [US1] Create RuleUpdateRequest DTO in backend/src/main/java/com/financial/rules/dto/RuleUpdateRequest.java with version field for optimistic locking
-- [ ] T019 [P] [US1] Create RuleResponse DTO in backend/src/main/java/com/financial/rules/dto/RuleResponse.java
-- [ ] T020 [P] [US1] Create RuleSummaryResponse DTO in backend/src/main/java/com/financial/rules/dto/RuleSummaryResponse.java for list views
-- [ ] T021 [P] [US2] Create EntryTemplateRequest DTO in backend/src/main/java/com/financial/rules/dto/EntryTemplateRequest.java
-- [ ] T022 [P] [US2] Create EntryLineRequest DTO in backend/src/main/java/com/financial/rules/dto/EntryLineRequest.java
-- [ ] T023 [P] [US2] Create VariableDefinition DTO in backend/src/main/java/com/financial/rules/dto/VariableDefinition.java with fields: name, type (enum), currency, description
-- [ ] T024 [P] [US2] Create ExpressionType enum in backend/src/main/java/com/financial/rules/dto/ExpressionType.java with values: DECIMAL, MONEY, BOOLEAN, STRING
+- [x] T017 [P] [US1] Create RuleCreateRequest DTO in backend/src/main/java/com/financial/rules/dto/RuleCreateRequest.java with validation annotations
+- [x] T018 [P] [US1] Create RuleUpdateRequest DTO in backend/src/main/java/com/financial/rules/dto/RuleUpdateRequest.java with version field for optimistic locking
+- [x] T019 [P] [US1] Create RuleResponse DTO in backend/src/main/java/com/financial/rules/dto/RuleResponse.java
+- [x] T020 [P] [US1] Create RuleSummaryResponse DTO in backend/src/main/java/com/financial/rules/dto/RuleSummaryResponse.java for list views
+- [x] T021 [P] [US2] Create EntryTemplateRequest DTO in backend/src/main/java/com/financial/rules/dto/EntryTemplateRequest.java
+- [x] T022 [P] [US2] Create EntryLineRequest DTO in backend/src/main/java/com/financial/rules/dto/EntryLineRequest.java
+- [x] T023 [P] [US2] Create VariableDefinition DTO in backend/src/main/java/com/financial/rules/dto/VariableDefinition.java with fields: name, type (enum), currency, description
+- [x] T024 [P] [US2] Create ExpressionType enum in backend/src/main/java/com/financial/rules/dto/ExpressionType.java with values: DECIMAL, MONEY, BOOLEAN, STRING
 
 ### Services for US1+US2
 
-- [ ] T025 [US2] Create ExpressionParser service in backend/src/main/java/com/financial/rules/service/ExpressionParser.java with methods: parse, validate, getType, extractVariables (implements strict typing per research.md)
-- [ ] T026 [US1] Create AccountingRuleService in backend/src/main/java/com/financial/rules/service/AccountingRuleService.java with methods: createRule, getRule, updateRule, deleteRule, listRules, cloneRule
-- [ ] T027 [US1] Implement version history methods in AccountingRuleService: createVersion (snapshot), listVersions, getVersion, rollbackToVersion
+- [x] T025 [US2] Create ExpressionParser service in backend/src/main/java/com/financial/rules/service/ExpressionParser.java with methods: parse, validate, getType, extractVariables (implements strict typing per research.md)
+- [x] T026 [US1] Create AccountingRuleService in backend/src/main/java/com/financial/rules/service/AccountingRuleService.java with methods: createRule, getRule, updateRule, deleteRule, listRules, cloneRule
+- [x] T027 [US1] Implement version history methods in AccountingRuleService: createVersion (snapshot), listVersions, getVersion, rollbackToVersion
 
 ### Controllers for US1+US2
 
-- [ ] T028 [US1] Create AccountingRuleController in backend/src/main/java/com/financial/rules/controller/AccountingRuleController.java with endpoints: POST /rules, GET /rules, GET /rules/{id}, PUT /rules/{id}, DELETE /rules/{id}
-- [ ] T029 [US1] Add OpenAPI annotations to AccountingRuleController with examples from contracts/accounting-rules-api.yaml
+- [x] T028 [US1] Create AccountingRuleController in backend/src/main/java/com/financial/rules/controller/AccountingRuleController.java with endpoints: POST /rules, GET /rules, GET /rules/{id}, PUT /rules/{id}, DELETE /rules/{id}
+- [x] T029 [US1] Add OpenAPI annotations to AccountingRuleController with examples from contracts/accounting-rules-api.yaml
 
 **Checkpoint**: At this point, basic rule CRUD with entry templates should work. Users can create rules with debit/credit lines and amount expressions.
 

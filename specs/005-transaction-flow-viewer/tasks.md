@@ -67,7 +67,7 @@
 - [x] T019 [US1] Implement listAllTransactionFlows with filters in TransactionFlowService in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
 - [x] T020 [US1] Create TransactionFlowController with products endpoints (list, get, scenarios) in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
 - [x] T021 [US1] Add transaction-flows list endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
-- [ ] T022 [P] [US1] Create ProductScenarioTree component with expand/collapse in frontend/components/flows/ProductScenarioTree.vue
+- [x] T022 [P] [US1] Create ProductScenarioTree component with expand/collapse in frontend/components/flows/ProductScenarioTree.vue
 - [x] T023 [P] [US1] Create TransactionFlowList component with table and summary counts in frontend/components/flows/TransactionFlowList.vue
 - [x] T024 [US1] Extend useTransactionFlows with products and scenarios API calls in frontend/composables/useTransactionFlows.ts
 - [x] T025 [US1] Create Transaction Flow Browser page with tree + list layout in frontend/pages/flows/index.vue
@@ -107,13 +107,13 @@
 
 ### Implementation for User Story 3
 
-- [ ] T036 [P] [US3] Create NumscriptViewDto in backend/src/main/java/com/financial/transactionflow/dto/NumscriptViewDto.java
-- [ ] T037 [US3] Implement getNumscript in TransactionFlowService (read from ExportArtifact or generate) in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
-- [ ] T038 [US3] Add getTransactionNumscript endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
-- [ ] T039 [US3] Create NumscriptViewer component with Prism highlighting and copy button in frontend/components/flows/NumscriptViewer.vue
-- [ ] T040 [US3] Extend useTransactionFlows with getNumscript API call in frontend/composables/useTransactionFlows.ts
-- [ ] T041 [US3] Implement Numscript tab in detail page using NumscriptViewer in frontend/pages/flows/[code].vue
-- [ ] T042 [US3] Add validation error display to NumscriptViewer when numscriptValid is false in frontend/components/flows/NumscriptViewer.vue
+- [x] T036 [P] [US3] Create NumscriptViewDto in backend/src/main/java/com/financial/transactionflow/dto/NumscriptViewDto.java
+- [x] T037 [US3] Implement getNumscript in TransactionFlowService (read from ExportArtifact or generate) in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
+- [x] T038 [US3] Add getTransactionNumscript endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
+- [x] T039 [US3] Create NumscriptViewer component with Prism highlighting and copy button in frontend/components/flows/NumscriptViewer.vue
+- [x] T040 [US3] Extend useTransactionFlows with getNumscript API call in frontend/composables/useTransactionFlows.ts
+- [x] T041 [US3] Implement Numscript tab in detail page using NumscriptViewer in frontend/pages/flows/[code].vue
+- [x] T042 [US3] Add validation error display to NumscriptViewer when numscriptValid is false in frontend/components/flows/NumscriptViewer.vue
 
 **Checkpoint**: User Story 3 complete - users can view and copy Numscript for any transaction
 
@@ -127,18 +127,18 @@
 
 ### Implementation for User Story 4
 
-- [ ] T043 [P] [US4] Create DesignPreviewDto in backend/src/main/java/com/financial/transactionflow/dto/DesignPreviewDto.java
-- [ ] T044 [US4] Create PreviewService to extract preview state from session in backend/src/main/java/com/financial/transactionflow/service/PreviewService.java
-- [ ] T045 [US4] Implement SSE stream for preview updates in PreviewService in backend/src/main/java/com/financial/transactionflow/service/PreviewService.java
-- [ ] T046 [US4] Create PreviewController with getSessionPreview and streamSessionPreview endpoints in backend/src/main/java/com/financial/transactionflow/controller/PreviewController.java
-- [ ] T047 [P] [US4] Create AccountsList component for preview panel in frontend/components/preview/AccountsList.vue
-- [ ] T048 [P] [US4] Create EntriesSummary component for preview panel in frontend/components/preview/EntriesSummary.vue
+- [x] T043 [P] [US4] Create DesignPreviewDto in backend/src/main/java/com/financial/transactionflow/dto/DesignPreviewDto.java
+- [x] T044 [US4] Create PreviewService to extract preview state from session in backend/src/main/java/com/financial/transactionflow/service/PreviewService.java
+- [x] T045 [US4] Implement SSE stream for preview updates in PreviewService in backend/src/main/java/com/financial/transactionflow/service/PreviewService.java
+- [x] T046 [US4] Create PreviewController with getSessionPreview and streamSessionPreview endpoints in backend/src/main/java/com/financial/transactionflow/controller/PreviewController.java
+- [x] T047 [P] [US4] Create AccountsList component for preview panel in frontend/components/preview/AccountsList.vue
+- [x] T048 [P] [US4] Create EntriesSummary component for preview panel in frontend/components/preview/EntriesSummary.vue
 - [ ] T049 [P] [US4] Create MiniFlowDiagram component (simplified flow preview) in frontend/components/preview/MiniFlowDiagram.vue
-- [ ] T050 [US4] Create DesignPreviewPanel component with collapsible layout in frontend/components/preview/DesignPreviewPanel.vue
-- [ ] T051 [US4] Create useDesignPreview composable with SSE connection in frontend/composables/useDesignPreview.ts
+- [x] T050 [US4] Create DesignPreviewPanel component with collapsible layout in frontend/components/preview/DesignPreviewPanel.vue
+- [x] T051 [US4] Create useDesignPreview composable with SSE connection in frontend/composables/useDesignPreview.ts
 - [ ] T052 [US4] Integrate DesignPreviewPanel into AI session page with resizable panel in frontend/pages/analysis/[id].vue
 - [ ] T053 [US4] Add panel size persistence using localStorage in frontend/composables/useDesignPreview.ts
-- [ ] T054 [US4] Style confirmed vs tentative elements differently in preview components in frontend/components/preview/AccountsList.vue and EntriesSummary.vue
+- [x] T054 [US4] Style confirmed vs tentative elements differently in preview components in frontend/components/preview/AccountsList.vue and EntriesSummary.vue
 
 **Checkpoint**: User Story 4 complete - analysts see real-time preview during AI conversations
 
@@ -152,17 +152,17 @@
 
 ### Implementation for User Story 5
 
-- [ ] T055 [P] [US5] Create FlowDiagramData DTO in backend/src/main/java/com/financial/transactionflow/dto/FlowDiagramData.java
-- [ ] T056 [US5] Create FlowDiagramService with dagre-based layout computation in backend/src/main/java/com/financial/transactionflow/service/FlowDiagramService.java
-- [ ] T057 [US5] Add getFlowDiagram endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
-- [ ] T058 [US5] Create AccountNode Vue Flow custom node component with type-based colors in frontend/components/flows/AccountNode.vue
-- [ ] T059 [US5] Create FlowDiagram component using Vue Flow with dagre layout in frontend/components/flows/FlowDiagram.vue
-- [ ] T060 [US5] Add solid/dashed edge styles for CASH/INFO flows in FlowDiagram in frontend/components/flows/FlowDiagram.vue
-- [ ] T061 [US5] Add zoom controls and pan functionality to FlowDiagram in frontend/components/flows/FlowDiagram.vue
-- [ ] T062 [US5] Add hover tooltips showing flow details on edges in frontend/components/flows/FlowDiagram.vue
-- [ ] T063 [US5] Extend useTransactionFlows with getFlowDiagram API call in frontend/composables/useTransactionFlows.ts
-- [ ] T064 [US5] Implement Flow Diagram tab in detail page in frontend/pages/flows/[code].vue
-- [ ] T065 [US5] Add account state visual distinction (solid/dotted/dashed borders) in AccountNode in frontend/components/flows/AccountNode.vue
+- [x] T055 [P] [US5] Create FlowDiagramData DTO in backend/src/main/java/com/financial/transactionflow/dto/FlowDiagramData.java
+- [x] T056 [US5] Create FlowDiagramService with dagre-based layout computation in backend/src/main/java/com/financial/transactionflow/service/FlowDiagramService.java
+- [x] T057 [US5] Add getFlowDiagram endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
+- [x] T058 [US5] Create AccountNode Vue Flow custom node component with type-based colors in frontend/components/flows/AccountNode.vue
+- [x] T059 [US5] Create FlowDiagram component using Vue Flow with dagre layout in frontend/components/flows/FlowDiagram.vue
+- [x] T060 [US5] Add solid/dashed edge styles for CASH/INFO flows in FlowDiagram in frontend/components/flows/FlowDiagram.vue
+- [x] T061 [US5] Add zoom controls and pan functionality to FlowDiagram in frontend/components/flows/FlowDiagram.vue
+- [x] T062 [US5] Add hover tooltips showing flow details on edges in frontend/components/flows/FlowDiagram.vue
+- [x] T063 [US5] Extend useTransactionFlows with getFlowDiagram API call in frontend/composables/useTransactionFlows.ts
+- [x] T064 [US5] Implement Flow Diagram tab in detail page in frontend/pages/flows/[code].vue
+- [x] T065 [US5] Add account state visual distinction (solid/dotted/dashed borders) in AccountNode in frontend/components/flows/AccountNode.vue
 
 **Checkpoint**: User Story 5 complete - users can visualize transaction flows graphically
 
@@ -176,12 +176,12 @@
 
 ### Implementation for User Story 6
 
-- [ ] T066 [P] [US6] Create TransactionTimelineDto and TimelineEventDto in backend/src/main/java/com/financial/transactionflow/dto/TransactionTimelineDto.java
-- [ ] T067 [US6] Implement getTransactionTimeline in TransactionFlowService in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
-- [ ] T068 [US6] Add getTransactionTimeline endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
-- [ ] T069 [US6] Create TransactionTimeline component with horizontal time axis in frontend/components/flows/TransactionTimeline.vue
-- [ ] T070 [US6] Add click-to-highlight linking timeline events to journal entries in TransactionTimeline in frontend/components/flows/TransactionTimeline.vue
-- [ ] T071 [US6] Extend useTransactionFlows with getTimeline API call in frontend/composables/useTransactionFlows.ts
+- [x] T066 [P] [US6] Create TransactionTimelineDto and TimelineEventDto in backend/src/main/java/com/financial/transactionflow/dto/TransactionTimelineDto.java
+- [x] T067 [US6] Implement getTransactionTimeline in TransactionFlowService in backend/src/main/java/com/financial/transactionflow/service/TransactionFlowService.java
+- [x] T068 [US6] Add getTransactionTimeline endpoint to TransactionFlowController in backend/src/main/java/com/financial/transactionflow/controller/TransactionFlowController.java
+- [x] T069 [US6] Create TransactionTimeline component with horizontal time axis in frontend/components/flows/TransactionTimeline.vue
+- [x] T070 [US6] Add click-to-highlight linking timeline events to journal entries in TransactionTimeline in frontend/components/flows/TransactionTimeline.vue
+- [x] T071 [US6] Extend useTransactionFlows with getTimeline API call in frontend/composables/useTransactionFlows.ts
 - [ ] T072 [US6] Implement Timeline tab in detail page (conditionally shown for multi-timing transactions) in frontend/pages/flows/[code].vue
 
 **Checkpoint**: User Story 6 complete - users can understand settlement timing
@@ -196,9 +196,9 @@
 
 ### Implementation for User Story 7
 
-- [ ] T073 [US7] Add source session link UI to transaction detail header in frontend/pages/flows/[code].vue
-- [ ] T074 [US7] Ensure sourceSessionId is included in TransactionFlowView response in backend/src/main/java/com/financial/transactionflow/dto/TransactionFlowView.java
-- [ ] T075 [US7] Implement navigation to /analysis/{sessionId} with read-only mode indicator in frontend/pages/flows/[code].vue
+- [x] T073 [US7] Add source session link UI to transaction detail header in frontend/pages/flows/[code].vue
+- [x] T074 [US7] Ensure sourceSessionId is included in TransactionFlowView response in backend/src/main/java/com/financial/transactionflow/dto/TransactionFlowView.java
+- [x] T075 [US7] Implement navigation to /analysis/{sessionId} with read-only mode indicator in frontend/pages/flows/[code].vue
 
 **Checkpoint**: User Story 7 complete - full traceability to design rationale
 
@@ -213,7 +213,7 @@
 - [ ] T078 Handle edge case: transaction with no entries (show placeholder with source session link) in frontend/pages/flows/[code].vue
 - [ ] T079 Handle edge case: Numscript validation errors (inline display) in frontend/components/flows/NumscriptViewer.vue
 - [ ] T080 Handle edge case: complex diagrams >10 accounts (add collapse/expand groups) in frontend/components/flows/FlowDiagram.vue
-- [ ] T081 [P] Add OpenAPI documentation annotations to all controller endpoints in backend/src/main/java/com/financial/transactionflow/controller/
+- [x] T081 [P] Add OpenAPI documentation annotations to all controller endpoints in backend/src/main/java/com/financial/transactionflow/controller/
 - [ ] T082 Run quickstart.md validation checklist to verify all functionality
 
 ---

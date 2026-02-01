@@ -1,0 +1,609 @@
+openapi: 3.0.3
+info:
+  title: AI Data Sync API
+  description: |
+    REST API for bidirectional synchronization between AI conversation sessions and system entities.
+    Enables AI to read system data for context and persist user-confirmed suggestions.
+  version: 1.0.0
+  contact:
+    name: Financial Journal Maker Team
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Sync Operations
+    description: Core data synchronization endpoints
+  - name: Context Management
+    description: Session context and provenance tracking
+  - name: Conflict Resolution
+    description: Conflict detection and resolution
+
+paths:
+  /api/ai/sync/context/{sessionId}:
+    get:
+      tags:
+        - Context Management
+      summary: Get sync context for AI session
+      description: Retrieves all loaded and created entities for a specific AI conversation session
+      operationId: getSyncContext
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: AI conversation session ID
+      responses:
+        '200':
+          description: Sync context retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncContextResponse'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    
+    post:
+      tags:
+        - Context Management
+      summary: Initialize sync context for session
+      description: Creates a new sync context when AI session starts
+      operationId: initializeSyncContext
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '201':
+          description: Sync context created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncContextResponse'
+        '409':
+          description: Context already exists for this session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/ai/sync/load:
+    post:
+      tags:
+        - Sync Operations
+      summary: Load system entities for AI context
+      description: |
+        Loads relevant system entities (products, scenarios, accounts, rules) based on conversation context.
+        Records loaded entities in sync context for provenance tracking.
+      operationId: loadEntitiesForAI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoadEntitiesRequest'
+      responses:
+        '200':
+          description: Entities loaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoadEntitiesResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/ai/sync/suggestions:
+    post:
+      tags:
+        - Sync Operations
+      summary: Sync AI suggestions to system entities
+      description: |
+        Creates or updates system entities based on user-confirmed AI suggestions.
+        Performs conflict detection, validation, and atomic transaction handling.
+      operationId: syncSuggestions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncSuggestionsRequest'
+      responses:
+        '200':
+          description: Suggestions synced successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncSuggestionsResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict detected - user resolution required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictResponse'
+        '500':
+          description: Sync operation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/ai/sync/conflicts/{sessionId}:
+    get:
+      tags:
+        - Conflict Resolution
+      summary: Get conflict history for session
+      description: Retrieves all detected conflicts and their resolution status
+      operationId: getConflicts
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: resolved
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter by resolution status
+      responses:
+        '200':
+          description: Conflicts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConflictResolutionResponse'
+
+  /api/ai/sync/conflicts/{conflictId}/resolve:
+    post:
+      tags:
+        - Conflict Resolution
+      summary: Resolve a detected conflict
+      description: Records user's resolution choice and retries sync operation
+      operationId: resolveConflict
+      parameters:
+        - name: conflictId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResolveConflictRequest'
+      responses:
+        '200':
+          description: Conflict resolved and entity created/updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncSuggestionsResponse'
+        '400':
+          description: Invalid resolution choice
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/ai/sync/operations/{sessionId}:
+    get:
+      tags:
+        - Context Management
+      summary: Get sync operation history
+      description: Retrieves audit trail of all sync operations for a session
+      operationId: getSyncOperations
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: operationType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [READ, CREATE, UPDATE, DELETE]
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [PENDING, SUCCESS, FAILED, ROLLED_BACK]
+      responses:
+        '200':
+          description: Operations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SyncOperationResponse'
+
+  /api/ai/sync/rollback/{sessionId}:
+    post:
+      tags:
+        - Sync Operations
+      summary: Rollback AI-created entities
+      description: |
+        Deletes all entities created via AI in the current session.
+        Only works within same conversation session (FR-023).
+      operationId: rollbackSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Rollback completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RollbackResponse'
+        '400':
+          description: Rollback not allowed (session closed or entities in use)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    LoadEntitiesRequest:
+      type: object
+      required:
+        - sessionId
+        - entityTypes
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+          description: AI conversation session ID
+        entityTypes:
+          type: array
+          items:
+            type: string
+            enum: [PRODUCT, SCENARIO, ACCOUNT, ACCOUNTING_RULE, TRANSACTION_TYPE]
+          description: Types of entities to load
+        filters:
+          type: object
+          additionalProperties: true
+          description: Optional filters (e.g., productId, status)
+          example:
+            productId: 5
+            status: ACTIVE
+
+    LoadEntitiesResponse:
+      type: object
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+        loadedEntities:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: object
+          description: Map of entity type to loaded entity summaries
+          example:
+            products:
+              - id: 1
+                code: "CREDIT_CARD"
+                name: "Credit Card Product"
+            accounts:
+              - id: 10
+                code: "1001"
+                name: "Assets:Cash"
+        loadedAt:
+          type: string
+          format: date-time
+
+    SyncSuggestionsRequest:
+      type: object
+      required:
+        - sessionId
+        - suggestions
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+        suggestions:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntitySuggestion'
+          minItems: 1
+        conflictResolution:
+          type: string
+          enum: [USE_EXISTING, CREATE_NEW, UPDATE_EXISTING, CANCEL]
+          description: Resolution strategy if conflict was previously detected
+
+    EntitySuggestion:
+      type: object
+      required:
+        - entityType
+        - action
+        - data
+      properties:
+        entityType:
+          type: string
+          enum: [PRODUCT, SCENARIO, ACCOUNT, ACCOUNTING_RULE, TRANSACTION_TYPE]
+        action:
+          type: string
+          enum: [CREATE, UPDATE]
+        entityId:
+          type: integer
+          format: int64
+          description: Required for UPDATE action
+        data:
+          type: object
+          additionalProperties: true
+          description: Entity-specific data matching create/update request DTOs
+          example:
+            code: "NEW_PRODUCT"
+            name: "New Product"
+            description: "AI-generated product"
+
+    SyncSuggestionsResponse:
+      type: object
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SyncResult'
+        syncedAt:
+          type: string
+          format: date-time
+
+    SyncResult:
+      type: object
+      properties:
+        entityType:
+          type: string
+        action:
+          type: string
+          enum: [CREATE, UPDATE]
+        status:
+          type: string
+          enum: [SUCCESS, FAILED]
+        entityId:
+          type: integer
+          format: int64
+          description: ID of created/updated entity
+        entityCode:
+          type: string
+        entityUrl:
+          type: string
+          description: Frontend URL to view the entity
+          example: "/products/123"
+        errorMessage:
+          type: string
+          description: Present if status=FAILED
+
+    ConflictResponse:
+      type: object
+      properties:
+        conflictId:
+          type: integer
+          format: int64
+        conflictType:
+          type: string
+          enum: [DUPLICATE_CODE, OVERLAPPING_RULE, CONSTRAINT_VIOLATION]
+        entityType:
+          type: string
+        suggestedCode:
+          type: string
+        existingEntity:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            code:
+              type: string
+            name:
+              type: string
+        resolutionOptions:
+          type: array
+          items:
+            type: string
+            enum: [USE_EXISTING, CREATE_NEW, UPDATE_EXISTING, CANCEL]
+        message:
+          type: string
+          description: Human-readable conflict description
+          example: "Account with code '1001' already exists"
+
+    ConflictResolutionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        sessionId:
+          type: integer
+          format: int64
+        conflictType:
+          type: string
+        entityType:
+          type: string
+        suggestedCode:
+          type: string
+        existingEntityId:
+          type: integer
+          format: int64
+        resolutionOptions:
+          type: array
+          items:
+            type: string
+        chosenResolution:
+          type: string
+        resolvedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+
+    ResolveConflictRequest:
+      type: object
+      required:
+        - resolution
+      properties:
+        resolution:
+          type: string
+          enum: [USE_EXISTING, CREATE_NEW, UPDATE_EXISTING, CANCEL]
+        modifiedData:
+          type: object
+          additionalProperties: true
+          description: Modified entity data if resolution=CREATE_NEW (e.g., different code)
+
+    SyncContextResponse:
+      type: object
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+        loadedEntities:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              format: int64
+          description: Map of entity type to array of loaded entity IDs
+        createdEntities:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              format: int64
+          description: Map of entity type to array of created entity IDs
+        updatedEntities:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              format: int64
+          description: Map of entity type to array of updated entity IDs
+        lastSyncAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        statistics:
+          type: object
+          properties:
+            totalLoaded:
+              type: integer
+            totalCreated:
+              type: integer
+            totalUpdated:
+              type: integer
+            conflictCount:
+              type: integer
+
+    SyncOperationResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        sessionId:
+          type: integer
+          format: int64
+        operationType:
+          type: string
+          enum: [READ, CREATE, UPDATE, DELETE]
+        entityType:
+          type: string
+        entityId:
+          type: integer
+          format: int64
+        entityCode:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, SUCCESS, FAILED, ROLLED_BACK]
+        errorMessage:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+
+    RollbackResponse:
+      type: object
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+        deletedEntities:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              format: int64
+          description: Map of entity type to deleted entity IDs
+        rollbackAt:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string

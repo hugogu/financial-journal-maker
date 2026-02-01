@@ -1,8 +1,10 @@
 # Financial Journal Maker Development Guidelines
 
-Auto-generated from all feature plans. **Last updated**: 2026-01-31
+Auto-generated from all feature plans. **Last updated**: 2026-02-01
 
 ## Active Technologies
+- Java 21 (Spring Boot 3.x) + Spring Boot, Spring Data JPA, Spring AI, Hibernate (006-ai-data-sync)
+- PostgreSQL (existing database with Product, Scenario, Account, AccountingRule tables) (006-ai-data-sync)
 
 - Java 21 + Spring Boot 3.x (001-coa-management, 002-accounting-rules)
 - PostgreSQL (001-coa-management, 002-accounting-rules)
@@ -82,14 +84,10 @@ Java 21: Follow Spring Boot conventions
 - Write tests with JUnit 5 and Testcontainers
 
 ## Recent Changes
+- 006-ai-data-sync: Added Java 21 (Spring Boot 3.x) + Spring Boot, Spring Data JPA, Spring AI, Hibernate
 
 - 002-accounting-rules: Added Accounting Rules Management module
 - 002-accounting-rules: Added Expression Parser with strict typing
-- 002-accounting-rules: Added Numscript DSL Generator
-- 002-accounting-rules: Added Rule Simulation Engine
-- 001-coa-management: Added Java 21 + Spring Boot 3.x
-- 001-coa-management: Added PostgreSQL database
-- 001-coa-management: Added Chart of Accounts Management API module
 
 ## Constitution Compliance
 
